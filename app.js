@@ -1,0 +1,41 @@
+import express from 'express';
+import bodyParser from 'body-parser';
+import methodOverride from 'method-override';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+import pool from './db/pool.js';
+import employeeRoutes from './routes/employees.js';
+import productRoutes from './routes/products.js';
+import supplierRoutes from './routes/suppliers.js';
+import customerRoutes from './routes/customers.js';
+import departmentRoutes from './routes/departments.js';
+import salesRoutes from './routes/sales.js';
+import returnRoutes from './routes/returns.js';
+
+dotenv.config();
+
+const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
+
+app.get('/', (req, res) => res.render('index'));
+
+app.use('/employees', employeeRoutes);
+app.use('/departments', departmentRoutes);
+app.use('/products', productRoutes);
+app.use('/suppliers', supplierRoutes);
+app.use('/customers', customerRoutes);
+app.use('/sales', salesRoutes);
+app.use('/returns', returnRoutes);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));

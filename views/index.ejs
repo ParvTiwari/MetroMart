@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MetroMart 🏪</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/header'); %>
+
+  <main class="container">
+    <h1>Welcome to MetroMart 🏪</h1>
+    <p>Your one-stop solution for managing store data efficiently!</p>
+
+    <div class="cards">
+      <a href="/employees" class="card">👨‍💼 Employees</a>
+      <a href="/departments" class="card">🏢 Departments</a>
+      <a href="/products" class="card">📦 Products</a>
+      <a href="/suppliers" class="card">🚚 Suppliers</a>
+      <a href="/customers" class="card">🧍‍♂️ Customers</a>
+      <a href="/sales" class="card">💰 Sales</a>
+      <a href="/returns" class="card">↩️ Returns</a>
+    </div>
+  </main>
+
+  <%- include('partials/footer'); %>
+</body>
+</html>
