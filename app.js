@@ -5,7 +5,9 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import pool from './db/pool.js';
+dotenv.config(); // ✅ load .env first
+
+import pool from './db/pool.js'; // ✅ use single shared pool
 import employeeRoutes from './routes/employees.js';
 import productRoutes from './routes/products.js';
 import supplierRoutes from './routes/suppliers.js';
@@ -13,8 +15,6 @@ import customerRoutes from './routes/customers.js';
 import departmentRoutes from './routes/departments.js';
 import salesRoutes from './routes/sales.js';
 import returnRoutes from './routes/returns.js';
-
-dotenv.config();
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -28,6 +28,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 app.get('/', (req, res) => res.render('index'));
+
+// Test connection once
+(async () => {
+  try {
+    const res = await pool.query("SELECT NOW()");
+    console.log("✅ Connected to PostgreSQL!");
+    console.log("Server time:", res.rows[0].now);
+  } catch (err) {
+    console.error("❌ Database connection error:", err);
+  }
+})();
 
 app.use('/employees', employeeRoutes);
 app.use('/departments', departmentRoutes);
