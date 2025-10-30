@@ -5,6 +5,73 @@ body {
   color: #333;
 }
 
+/* --- Sales Page Fixes --- */
+.product-add-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.product-add-row select,
+.product-add-row .qty-input {
+  flex: 1;
+  min-width: 150px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 15px;
+}
+
+.button-right {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.btn-primary {
+  background-color: #0077b6;
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  padding: 10px 25px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #005f8c;
+}
+
+.btn-secondary {
+  background-color: #0077b6;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background-color: #005f8c;
+}
+
+.btn-delete {
+  background-color: #d62828;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-delete:hover {
+  background-color: #b91d1d;
+}
+
+
+
 .hero {
   display: flex;
   flex-wrap: wrap;
