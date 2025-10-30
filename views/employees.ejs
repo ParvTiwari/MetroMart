@@ -13,6 +13,7 @@
 
   <section class="form-section">
     <h2 class="section-title">➕ Add New Employee</h2>
+    <br>
     <form action="/employees/add" method="POST" class="form-card">
       <div class="form-group">
         <label>Full Name</label>
@@ -45,6 +46,30 @@
 
       <button type="submit" class="btn-primary">✅ Add Employee</button>
     </form>
+  </section>
+
+  <section class="filter-sort-bar">
+      <form action="/employees" method="GET">
+        <input type="text" name="search" placeholder="🔍 Search by name..." value="<%= typeof search !== 'undefined' ? search : '' %>">
+
+        <select name="department">
+          <option value="">All Departments</option>
+          <% departments.forEach(dep => { %>
+            <option value="<%= dep.dep_id %>" <%= dep.dep_id == department ? 'selected' : '' %>><%= dep.dep_name %></option>
+          <% }) %>
+        </select>
+
+        <select name="sort">
+          <option value="">Sort By</option>
+          <option value="name_asc" <%= sort === 'name_asc' ? 'selected' : '' %>>Name (A-Z)</option>
+          <option value="name_desc" <%= sort === 'name_desc' ? 'selected' : '' %>>Name (Z-A)</option>
+          <option value="salary_high" <%= sort === 'salary_high' ? 'selected' : '' %>>Salary (High → Low)</option>
+          <option value="salary_low" <%= sort === 'salary_low' ? 'selected' : '' %>>Salary (Low → High)</option>
+          <option value="dep" <%= sort === 'dep' ? 'selected' : '' %>>Department</option>
+        </select>
+
+        <button type="submit" class="btn-filter">Apply</button>
+      </form>
   </section>
 
   <section class="table-section">

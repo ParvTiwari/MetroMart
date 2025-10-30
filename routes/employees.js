@@ -5,21 +5,53 @@ const router = express.Router();
 // ✅ GET Employees + Departments
 router.get('/', async (req, res) => {
   try {
-    const employeesQuery = `
+    const {search, department, sort} = req.query;
+    let employeesQuery = `
       SELECT e.emp_id, e.emp_name, e.email, e.mobile, e.salary, d.dep_name
       FROM employees e
       LEFT JOIN department d ON d.supervisor_id = e.emp_id
-      ORDER BY e.emp_id ASC;
-    `;
+      where 1=1
+      `;
+    
+    const queryParams = [];
+
+    if (search && search.trim() !== '') {
+      employeesQuery += ` 
+        AND (
+          CAST(e.emp_id AS TEXT) ILIKE $${queryParams.length + 1} OR
+          e.emp_name ILIKE $${queryParams.length + 1} OR
+          e.email ILIKE $${queryParams.length + 1} OR
+          e.mobile ILIKE $${queryParams.length + 1} OR
+          CAST(e.salary AS TEXT) ILIKE $${queryParams.length + 1} OR
+          d.dep_name ILIKE $${queryParams.length + 1}
+        )
+      `;
+      queryParams.push(`%${search}%`);
+    }
+    if (department && department.trim() !== '') {
+      employeesQuery += ` AND d.dep_id = $${queryParams.length + 1}`;
+      queryParams.push(department);
+    }
+
+    if(sort === "name_asc") employeesQuery += "order by e.emp_name"
+    else if(sort === "name_desc") employeesQuery += "order by e.emp_name desc"
+    else if(sort === "salary_high") employeesQuery += "order by e.salary desc"
+    else if(sort === "salary_low") employeesQuery += "order by e.salary asc"
+    else if(sort === "dep") employeesQuery += "order by d.dep_name asc"
+    else employeesQuery += "ORDER BY e.emp_id ASC;"
 
     const departmentsQuery = `SELECT dep_id, dep_name FROM department ORDER BY dep_name ASC;`;
-
-    const employeesResult = await pool.query(employeesQuery);
     const departmentsResult = await pool.query(departmentsQuery);
+
+    const employeesResult = await pool.query(employeesQuery, queryParams);
+
 
     res.render('employees', {
       employees: employeesResult.rows,
-      departments: departmentsResult.rows
+      departments: departmentsResult.rows,
+      search,
+      department,
+      sort
     });
 
   } catch (err) {
