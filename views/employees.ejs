@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employees | MetroMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+  <h1 class="page-title">👨‍💼 Employee Management</h1>
+
+  <section class="form-section">
+    <h2 class="section-title">➕ Add New Employee</h2>
+    <br>
+    <form action="/employees/add" method="POST" class="form-card">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" name="emp_name" placeholder="Enter full name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="Enter email" required>
+      </div>
+
+      <div class="form-group">
+        <label>Mobile</label>
+        <input type="text" name="mobile" placeholder="10-digit mobile" maxlength="10" required>
+      </div>
+
+      <div class="form-group">
+        <label>Salary</label>
+        <input type="number" name="salary" placeholder="Enter salary" required>
+      </div>
+
+      <div class="form-group">
+        <label>Department</label>
+        <select name="dep_id" required>
+          <% departments.forEach(dep => { %>
+            <option value="<%= dep.dep_id %>"><%= dep.dep_name %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-primary">✅ Add Employee</button>
+    </form>
+  </section>
+
+  <section class="filter-sort-bar">
+      <form action="/employees" method="GET">
+        <input type="text" name="search" placeholder="🔍 Search by name..." value="<%= typeof search !== 'undefined' ? search : '' %>">
+
+        <select name="department">
+          <option value="">All Departments</option>
+          <% departments.forEach(dep => { %>
+            <option value="<%= dep.dep_id %>" <%= dep.dep_id == department ? 'selected' : '' %>><%= dep.dep_name %></option>
+          <% }) %>
+        </select>
+
+        <select name="sort">
+          <option value="">Sort By</option>
+          <option value="name_asc" <%= sort === 'name_asc' ? 'selected' : '' %>>Name (A-Z)</option>
+          <option value="name_desc" <%= sort === 'name_desc' ? 'selected' : '' %>>Name (Z-A)</option>
+          <option value="salary_high" <%= sort === 'salary_high' ? 'selected' : '' %>>Salary (High → Low)</option>
+          <option value="salary_low" <%= sort === 'salary_low' ? 'selected' : '' %>>Salary (Low → High)</option>
+          <option value="dep" <%= sort === 'dep' ? 'selected' : '' %>>Department</option>
+        </select>
+
+        <button type="submit" class="btn-filter">Apply</button>
+      </form>
+  </section>
+
+  <section class="table-section">
+    <h2 class="section-title">📄 Employee List</h2>
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>ID</th><th>Name</th><th>Email</th>
+          <th>Mobile</th><th>Department</th>
+          <th>Salary</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% employees.forEach(emp => { %>
+          <tr>
+            <td><%= emp.emp_id %></td>
+            <td><%= emp.emp_name %></td>
+            <td><%= emp.email %></td>
+            <td><%= emp.mobile %></td>
+            <td><%= emp.dep_name %></td>
+            <td>₹<%= emp.salary %></td>
+            <td>
+              <a href="/employees/edit/<%= emp.emp_id %>" class="btn-edit">✏ Edit</a>
+              <a href="/employees/delete/<%= emp.emp_id %>" class="btn-delete" onclick="return confirm('Are you sure?')">🗑 Delete</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+        </table>
+    </section>
+    </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>
