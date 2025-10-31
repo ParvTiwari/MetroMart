@@ -49,5 +49,5 @@ app.use('/customers', customerRoutes);
 app.use('/sales', salesRoutes);
 app.use('/returns', returnRoutes);
 
-// Export the app for Vercel (serverless)
-export default app;
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));

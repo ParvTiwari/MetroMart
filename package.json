@@ -2,10 +2,9 @@
   "name": "metromart",
   "version": "1.0.0",
   "description": "Metromart is an enterprise-grade supermarket management solution designed to streamline fast, reliable, and scalable handling of all major retail processes. This project emphasizes robust database architecture to ensure integrity, normalization, and efficient data operations for large-scale supermarket chains and hypermarkets.​",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js",
-    "build": "echo 'No build step required'"
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
