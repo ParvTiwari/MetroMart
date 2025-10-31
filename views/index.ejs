@@ -1,26 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MetroMart 🏪</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MetroMart 🏪 | Smart Retail Management</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 </head>
+
 <body>
-  <%- include('partials/header'); %>
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Welcome to <span>MetroMart</span> 🏪</h1>
+      <p>Your one-stop solution for managing employees, products, and sales efficiently.</p>
+      <a href="/dashboard" class="btn-primary">Go to Dashboard</a>
+    </div>
+    <div class="hero-image">
+      <img src="/images/store-illustration.png" alt="Store Illustration" class="store-image"/>
+    </div>
+  </section>
 
   <main class="container">
-    <h1>Welcome to MetroMart 🏪</h1>
-    <p>Your one-stop solution for managing store data efficiently!</p>
-
+    <h2 class="section-title">Quick Access</h2>
     <div class="cards">
-      <a href="/employees" class="card">👨‍💼 Employees</a>
-      <a href="/departments" class="card">🏢 Departments</a>
-      <a href="/products" class="card">📦 Products</a>
-      <a href="/suppliers" class="card">🚚 Suppliers</a>
-      <a href="/customers" class="card">🧍‍♂️ Customers</a>
-      <a href="/sales" class="card">💰 Sales</a>
-      <a href="/returns" class="card">↩️ Returns</a>
+      <a href="/employees" class="card">
+        <div class="icon">👨‍💼</div>
+        <h3>Employees</h3>
+        <p>Manage staff details, positions, and shifts.</p>
+      </a>
+
+      <a href="/departments" class="card">
+        <div class="icon">🏢</div>
+        <h3>Departments</h3>
+        <p>Track store sections and departmental activities.</p>
+      </a>
+
+      <a href="/products" class="card">
+        <div class="icon">📦</div>
+        <h3>Products</h3>
+        <p>Maintain your inventory with ease.</p>
+      </a>
+
+      <a href="/suppliers" class="card">
+        <div class="icon">🚚</div>
+        <h3>Suppliers</h3>
+        <p>View and manage supplier information.</p>
+      </a>
+
+      <a href="/customers" class="card">
+        <div class="icon">🧍‍♂️</div>
+        <h3>Customers</h3>
+        <p>Track loyal customers and their details.</p>
+      </a>
+
+      <a href="/sales" class="card">
+        <div class="icon">💰</div>
+        <h3>Sales</h3>
+        <p>Monitor daily and monthly sales reports.</p>
+      </a>
+
+      <a href="/returns" class="card">
+        <div class="icon">↩️</div>
+        <h3>Returns</h3>
+        <p>Handle customer product returns easily.</p>
+      </a>
     </div>
   </main>
 
