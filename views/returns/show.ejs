@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Return Details - MetroMart</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="container">
+        <h1>Return Details</h1>
+
+        <div class="return-details">
+            <div class="detail-section">
+                <h2>Return Information</h2>
+                <p><strong>Return ID:</strong> <%= returnData.return_id %></p>
+                <p><strong>Return Date:</strong> <%= new Date(returnData.return_date).toLocaleDateString() %></p>
+                <p><strong>Return Reason:</strong> <%= returnData.return_reason %></p>
+                <p><strong>Quantity Returned:</strong> <%= returnData.quantity_returned %></p>
+                <p><strong>Refund Amount:</strong> $<%= returnData.refund_amount ? returnData.refund_amount.toFixed(2) : '0.00' %></p>
+                <p><strong>Processed By:</strong> <%= returnData.employees ? returnData.employees.emp_name : 'Unknown' %></p>
+            </div>
+
+            <div class="detail-section">
+                <h2>Invoice Information</h2>
+                <p><strong>Invoice Number:</strong> <%= returnData.invoice_num %></p>
+                <p><strong>Invoice Date:</strong> <%= returnData.sales_invoices ? new Date(returnData.sales_invoices.invoice_timestamp).toLocaleDateString() : 'Unknown' %></p>
+                <p><strong>Customer:</strong> <%= returnData.sales_invoices && returnData.sales_invoices.customers ? returnData.sales_invoices.customers.customer_name : 'Unknown' %></p>
+                <p><strong>Sales Employee:</strong> <%= returnData.sales_invoices && returnData.sales_invoices.employees ? returnData.sales_invoices.employees.emp_name : 'Unknown' %></p>
+            </div>
+
+            <div class="detail-section">
+                <h2>Product Information</h2>
+                <p><strong>Product Code:</strong> <%= returnData.product_code %></p>
+                <p><strong>Product Name:</strong> <%= returnData.products ? returnData.products.product_name : 'Unknown Product' %></p>
+                <p><strong>Unit Price:</strong> $<%= returnData.products && returnData.products.price ? returnData.products.price.toFixed(2) : '0.00' %></p>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="/returns/<%= returnData.return_id %>/edit" class="btn btn-warning">Edit Return</a>
+            <a href="/returns" class="btn btn-secondary">Back to Returns</a>
+        </div>
+    </div>
+
+    <style>
+        .return-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .detail-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .detail-section h2 {
+            margin-top: 0;
+            color: #495057;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .detail-section p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .actions {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .actions .btn {
+            margin: 0 10px;
+        }
+    </style>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>
