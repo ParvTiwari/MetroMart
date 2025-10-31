@@ -1,213 +1,445 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f5f6fa;
   margin: 0;
-  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f9fafc;
+  color: #333;
+}
+
+/* --- Sales Page Fixes --- */
+.product-add-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.product-add-row select,
+.product-add-row .qty-input {
+  flex: 1;
+  min-width: 150px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 15px;
+}
+
+.button-right {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.btn-primary {
+  background-color: #0077b6;
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  padding: 10px 25px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #005f8c;
+}
+
+.btn-secondary {
+  background-color: #0077b6;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background-color: #005f8c;
+}
+
+.btn-delete {
+  background-color: #d62828;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-delete:hover {
+  background-color: #b91d1d;
+}
+
+
+
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(120deg, #0077b6, #00b4d8);
+  color: white;
+  padding: 3rem 2rem;
+}
+
+.hero-content {
+  flex: 1 1 400px;
+  text-align: left;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero-content span {
+  color: #ffd60a;
+}
+
+.hero-content p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.hero-image {
+  flex: 1 1 300px;
   text-align: center;
 }
 
-header {
-  background-color: #004aad;
-  color: white;
-  padding: 15px 0;
+.hero-image img {
+  width: 80%;
+  max-width: 400px;
 }
 
-header h2 {
-  margin: 0;
-}
-
-nav a {
-  color: white;
+.btn-primary {
+  background: #ffd60a;
+  color: #000;
+  padding: 0.8rem 1.5rem;
   text-decoration: none;
-  margin: 0 10px;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: background 0.3s ease;
 }
 
-nav a:hover {
-  text-decoration: underline;
+.btn-primary:hover {
+  background: #ffcd00;
 }
 
 .container {
-  padding: 30px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  color: #0077b6;
+  margin-bottom: 1.5rem;
 }
 
 .cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 20px;
-  gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
 .card {
-  background-color: white;
-  border: 2px solid #004aad;
-  border-radius: 10px;
-  width: 150px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  color: #004aad;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 1.5rem;
   text-decoration: none;
-  transition: all 0.3s ease;
+  color: #333;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
-  background-color: #004aad;
-  color: white;
-  transform: scale(1.05);
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.card .icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.card h3 {
+  margin: 0.5rem 0;
+  color: #0077b6;
+}
+
+.card p {
+  font-size: 0.9rem;
+  color: #555;
 }
 
 footer {
-  background-color: #ddd;
-  padding: 10px 0;
-  margin-top: 20px;
+  background-color: #0a2540;   /* Dark professional tone (like retail dashboards) */
+  color: #ffffff;
+  text-align: center;
+  padding: 1rem 0;
+  font-size: 0.95rem;
+  margin-top: 3rem;
+  border-top: 3px solid #ffd60a; /* Accent line in brand color */
 }
 
-/* Table Styles */
-.table-container {
-  margin-top: 20px;
-  overflow-x: auto;
+footer p {
+  margin: 0;
+  letter-spacing: 0.5px;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  border-radius: 8px;
-  overflow: hidden;
+footer a {
+  color: #ffd60a;
+  text-decoration: none;
+  font-weight: 500;
 }
 
-table th, table td {
-  padding: 12px 15px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+footer a:hover {
+  text-decoration: underline;
+}
+.store-image {
+  border-radius: 20px; /* Adjust value for more or less rounding */
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
-table th {
-  background-color: #004aad;
-  color: white;
-  font-weight: bold;
-}
-
-table tr:hover {
-  background-color: #f8f9fa;
-}
-
-/* Form Styles */
-.form {
-  background-color: white;
+.form-section, .table-section {
+  margin: 2rem 0;
+  background: #ffffff;
   padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  max-width: 600px;
-  margin: 20px auto;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-.form-group {
-  margin-bottom: 20px;
+.form-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem 2rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  font-weight: 600;
+  margin-bottom: 6px;
   color: #333;
 }
 
-.form-group input,
-.form-group textarea {
+.form-group input, .form-group select {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border 0.3s, box-shadow 0.3s;
 }
 
-.form-group textarea {
-  height: 100px;
-  resize: vertical;
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #0077b6;
+  box-shadow: 0 0 5px rgba(0, 119, 182, 0.3);
 }
 
-/* Button Styles */
-.btn {
-  display: inline-block;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
+/* Submit button */
 .btn-primary {
-  background-color: #004aad;
+  grid-column: span 2;
+  background: linear-gradient(135deg, #0077b6, #00a6ff);
   color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background 0.3s, transform 0.2s;
 }
 
 .btn-primary:hover {
-  background-color: #003580;
+  background: linear-gradient(135deg, #005f8e, #008ed6);
+  transform: translateY(-2px);
 }
 
-.btn-secondary {
-  background-color: #6c757d;
+/* Table styling */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.styled-table thead {
+  background-color: #0077b6;
+  color: white;
+  border-radius: 10px 10px 0 0;
+}
+
+.styled-table th, .styled-table td {
+  padding: 14px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.styled-table tr:hover {
+  background-color: #f0f8ff;
+  transition: background-color 0.2s;
+}
+
+.styled-table th {
+  font-weight: 600;
+}
+
+/* Action buttons */
+.btn-edit, .btn-delete {
+  padding: 6px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.btn-edit {
+  background-color: #17a2b8;
   color: white;
 }
 
-.btn-secondary:hover {
-  background-color: #545b62;
-}
-
-.btn-warning {
-  background-color: #ffc107;
-  color: #212529;
-}
-
-.btn-warning:hover {
-  background-color: #e0a800;
-}
-
-.btn-danger {
+.btn-delete {
   background-color: #dc3545;
   color: white;
 }
 
-.btn-danger:hover {
-  background-color: #c82333;
+.btn-edit:hover, .btn-delete:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
 }
 
-.form-actions {
-  margin-top: 30px;
+/* Section titles */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #0077b6;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .form-card {
+    grid-template-columns: 1fr;
+  }
+  
+  .btn-primary {
+    grid-column: span 1;
+  }
+}
+
+/* Header Styling */
+.main-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(120deg, #0077b6, #00b4d8);
+  padding: 1rem 2rem;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.main-header .logo h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0;
+  color: #fff;
+}
+
+.main-header .logo span {
+  color: #ffd60a;
+}
+
+.nav-links a {
+  margin-left: 1.5rem;
+  font-weight: 600;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.nav-links a:hover {
+  background: #ffd60a;
+  color: #000;
+  transform: translateY(-2px);
+}
+
+.page-title {
   text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #0077b6;
+  font-weight: 600;
 }
 
-.form-actions .btn {
-  margin: 0 10px;
-}
-
-/* Customer Details Styles */
-.customer-details {
-  background-color: white;
-  padding: 30px;
+/* Buttons styled already in previous CSS; ensure consistency */
+.btn-primary {
+  background: #0077b6;
+  color: white;
+  padding: 12px;
+  border: none;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  max-width: 600px;
-  margin: 20px auto;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  grid-column: span 2;
+}
+.btn-primary:hover { background: #005f8e; }
+
+.btn-edit, .btn-delete {
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+.btn-edit { background-color: #17a2b8; color: white; }
+.btn-delete { background-color: #dc3545; color: white; }
+
+.table-section {
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  padding: 20px;
+  background: white;
+  margin-top: 2rem;
 }
 
-.detail-row {
-  margin-bottom: 15px;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
+.filter-sort-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 8px;
 }
-
-.detail-row strong {
-  display: inline-block;
-  width: 150px;
-  color: #004aad;
+.filter-sort-bar form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+.filter-sort-bar input,
+.filter-sort-bar select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.btn-filter {
+  background: #007bff;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-filter:hover {
+  background: #0056b3;
 }
