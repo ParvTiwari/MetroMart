@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 
 dotenv.config(); // ✅ load .env first
 
-import pool from './db/pool.js'; // ✅ use single shared pool
+import supabase from './db/pool.js'; // ✅ use Supabase client
 import employeeRoutes from './routes/employees.js';
 import productRoutes from './routes/products.js';
 import supplierRoutes from './routes/suppliers.js';
@@ -32,11 +32,12 @@ app.get('/', (req, res) => res.render('index'));
 // Test connection once
 (async () => {
   try {
-    const res = await pool.query("SELECT NOW()");
-    console.log("✅ Connected to PostgreSQL!");
-    console.log("Server time:", res.rows[0].now);
+    // Test Supabase connection by checking if we can access the database
+    const { data, error } = await supabase.from('employees').select('count').limit(1);
+    if (error) throw error;
+    console.log("✅ Connected to Supabase!");
   } catch (err) {
-    console.error("❌ Database connection error:", err);
+    console.error("❌ Supabase connection error:", err.message);
   }
 })();
 

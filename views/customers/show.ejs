@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Details - MetroMart</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="container">
+        <h1>Customer Details</h1>
+
+        <div class="customer-details">
+            <div class="detail-row">
+                <strong>ID:</strong> <%= customer.customer_id %>
+            </div>
+            <div class="detail-row">
+                <strong>Name:</strong> <%= customer.customer_name %>
+            </div>
+            <div class="detail-row">
+                <strong>Mobile:</strong> <%= customer.mobile %>
+            </div>
+            <div class="detail-row">
+                <strong>Email:</strong> <%= customer.email %>
+            </div>
+            <div class="detail-row">
+                <strong>Address:</strong> <%= customer.address %>
+            </div>
+            <div class="detail-row">
+                <strong>Loyalty Points:</strong> <%= customer.loyalty_points %>
+            </div>
+            <div class="detail-row">
+                <strong>Registration Date:</strong> <%= new Date(customer.registration_date).toLocaleDateString() %>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="/customers/<%= customer.customer_id %>/edit" class="btn btn-warning">Edit</a>
+            <a href="/customers" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

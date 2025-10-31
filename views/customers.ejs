@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers - MetroMart</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <div class="container">
+        <h1>Customers</h1>
+        <a href="/customers/new" class="btn btn-primary">Add New Customer</a>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Loyalty Points</th>
+                        <th>Registration Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% customers.forEach(customer => { %>
+                        <tr>
+                            <td><%= customer.customer_id %></td>
+                            <td><%= customer.customer_name %></td>
+                            <td><%= customer.mobile %></td>
+                            <td><%= customer.email %></td>
+                            <td><%= customer.address %></td>
+                            <td><%= customer.loyalty_points %></td>
+                            <td><%= new Date(customer.registration_date).toLocaleDateString() %></td>
+                            <td>
+                                <a href="/customers/<%= customer.customer_id %>" class="btn btn-secondary">View</a>
+                                <a href="/customers/<%= customer.customer_id %>/edit" class="btn btn-warning">Edit</a>
+                                <form action="/customers/<%= customer.customer_id %>?_method=DELETE" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+</body>
+</html>
