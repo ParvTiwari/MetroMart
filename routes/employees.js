@@ -1,61 +1,72 @@
 import express from 'express';
-import pool from '../db/pool.js';
+import supabase from '../db/pool.js';
 const router = express.Router();
 
 // ✅ GET Employees + Departments
 router.get('/', async (req, res) => {
   try {
-    const {search, department, sort} = req.query;
-    let employeesQuery = `
-      SELECT e.emp_id, e.emp_name, e.email, e.mobile, e.salary, d.dep_name
-      FROM employees e
-      LEFT JOIN department d ON d.supervisor_id = e.emp_id
-      where 1=1
-      `;
-    
-    const queryParams = [];
+    const { search, department, sort } = req.query;
 
+    // Get departments first
+    const { data: departments, error: deptError } = await supabase
+      .from('department')
+      .select('dep_id, dep_name')
+      .order('dep_name');
+
+    if (deptError) throw deptError;
+
+    // Build employees query with Supabase
+    let query = supabase
+      .from('employees')
+      .select(`
+        emp_id,
+        emp_name,
+        email,
+        mobile,
+        salary,
+        department:department!supervisor_id(dep_name)
+      `);
+
+    // Apply search filter if provided
     if (search && search.trim() !== '') {
-      employeesQuery += ` 
-        AND (
-          CAST(e.emp_id AS TEXT) ILIKE $${queryParams.length + 1} OR
-          e.emp_name ILIKE $${queryParams.length + 1} OR
-          e.email ILIKE $${queryParams.length + 1} OR
-          e.mobile ILIKE $${queryParams.length + 1} OR
-          CAST(e.salary AS TEXT) ILIKE $${queryParams.length + 1} OR
-          d.dep_name ILIKE $${queryParams.length + 1}
-        )
-      `;
-      queryParams.push(`%${search}%`);
+      query = query.or(`
+        emp_name.ilike.%${search}%,
+        email.ilike.%${search}%,
+        mobile.ilike.%${search}%
+      `);
     }
+
+    // Apply department filter if provided
     if (department && department.trim() !== '') {
-      employeesQuery += ` AND d.dep_id = $${queryParams.length + 1}`;
-      queryParams.push(department);
+      query = query.eq('department.dep_id', department);
     }
 
-    if(sort === "name_asc") employeesQuery += "order by e.emp_name"
-    else if(sort === "name_desc") employeesQuery += "order by e.emp_name desc"
-    else if(sort === "salary_high") employeesQuery += "order by e.salary desc"
-    else if(sort === "salary_low") employeesQuery += "order by e.salary asc"
-    else if(sort === "dep") employeesQuery += "order by d.dep_name asc"
-    else employeesQuery += "ORDER BY e.emp_id ASC;"
+    // Apply sorting
+    if (sort === "name_asc") {
+      query = query.order('emp_name');
+    } else if (sort === "name_desc") {
+      query = query.order('emp_name', { ascending: false });
+    } else if (sort === "salary_high") {
+      query = query.order('salary', { ascending: false });
+    } else if (sort === "salary_low") {
+      query = query.order('salary');
+    } else {
+      query = query.order('emp_id');
+    }
 
-    const departmentsQuery = `SELECT dep_id, dep_name FROM department ORDER BY dep_name ASC;`;
-    const departmentsResult = await pool.query(departmentsQuery);
+    const { data: employees, error: empError } = await query;
 
-    const employeesResult = await pool.query(employeesQuery, queryParams);
-
+    if (empError) throw empError;
 
     res.render('employees', {
-      employees: employeesResult.rows,
-      departments: departmentsResult.rows,
-      search,
-      department,
-      sort
+      employees: employees || [],
+      departments: departments || [],
+      search: search || '',
+      department: department || '',
+      sort: sort || ''
     });
-
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching employees:', err);
     res.status(500).send('Error fetching employees');
   }
 });
@@ -65,14 +76,17 @@ router.post('/add', async (req, res) => {
   const { emp_name, email, mobile, salary, dep_id } = req.body;
   
   try {
-    const insertQuery = `
-      INSERT INTO employees (emp_name, email, mobile, salary, dep_id)
-      VALUES ($1, $2, $3, $4, $5);
-    `;
-    await pool.query(insertQuery, [emp_name, email, mobile, salary, dep_id]);
+    const { error } = await supabase
+      .from('employees')
+      .insert([
+        { emp_name, email, mobile, salary, dep_id }
+      ]);
+
+    if (error) throw error;
+
     res.redirect('/employees');
   } catch (err) {
-    console.error(err);
+    console.error('Error adding employee:', err);
     res.status(500).send('Error adding employee');
   }
 });
@@ -82,20 +96,33 @@ router.get('/edit/:emp_id', async (req, res) => {
   try {
     const empId = req.params.emp_id;
 
-    const empQuery = 'SELECT * FROM employees WHERE emp_id = $1';
-    const deptQuery = 'SELECT dep_id, dep_name FROM department ORDER BY dep_name ASC';
+    const { data: employee, error: empError } = await supabase
+      .from('employees')
+      .select(`
+        emp_id,
+        emp_name,
+        email,
+        mobile,
+        salary,
+        dep_id,
+        department:department!supervisor_id(dep_name)
+      `)
+      .eq('emp_id', empId)
+      .single();
 
-    const [empResult, deptResult] = await Promise.all([
-      pool.query(empQuery, [empId]),
-      pool.query(deptQuery)
-    ]);
+    const { data: departments, error: deptError } = await supabase
+      .from('department')
+      .select('dep_id, dep_name')
+      .order('dep_name');
+
+    if (empError || deptError) throw empError || deptError;
 
     res.render('editEmployee', {
-      employee: empResult.rows[0],
-      departments: deptResult.rows
+      employee,
+      departments
     });
   } catch (err) {
-    console.error(err);
+    console.error('Error loading edit form:', err);
     res.status(500).send('Error loading edit form');
   }
 });
@@ -106,27 +133,35 @@ router.post('/edit/:emp_id', async (req, res) => {
   const { emp_name, email, mobile, salary, dep_id } = req.body;
 
   try {
-    const updateQuery = `
-      UPDATE employees
-      SET emp_name = $1, email = $2, mobile = $3, salary = $4, dep_id = $5
-      WHERE emp_id = $6;
-    `;
-    await pool.query(updateQuery, [emp_name, email, mobile, salary, dep_id, empId]);
+    const { error } = await supabase
+      .from('employees')
+      .update({ emp_name, email, mobile, salary, dep_id })
+      .eq('emp_id', empId);
+
+    if (error) throw error;
+
     res.redirect('/employees');
   } catch (err) {
-    console.error(err);
+    console.error('Error updating employee:', err);
     res.status(500).send('Error updating employee');
   }
 });
 
-// ✅ DELETE Employee
-router.get('/delete/:emp_id', async (req, res) => {
+// ✅ POST Delete Employee
+router.post('/delete/:emp_id', async (req, res) => {
+  const empId = req.params.emp_id;
+
   try {
-    const empId = req.params.emp_id;
-    await pool.query('DELETE FROM employees WHERE emp_id = $1', [empId]);
+    const { error } = await supabase
+      .from('employees')
+      .delete()
+      .eq('emp_id', empId);
+
+    if (error) throw error;
+
     res.redirect('/employees');
   } catch (err) {
-    console.error(err);
+    console.error('Error deleting employee:', err);
     res.status(500).send('Error deleting employee');
   }
 });
