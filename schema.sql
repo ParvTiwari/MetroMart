@@ -5,7 +5,10 @@ create table employees(
 	mobile char(10) not null unique,
 	salary decimal(10, 2) not null check(salary > 0),
 	hire_date date not null default current_date,
-	is_active boolean default true
+	is_active boolean default true,
+	dep_id int,
+
+	foreign key(dep_id) references department(dep_id) on delete set null
 );
 
 create table department(
