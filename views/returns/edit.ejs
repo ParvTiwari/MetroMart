@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Return - MetroMart</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .edit-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 0;
+            margin: -30px -30px 30px -30px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .edit-header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .edit-header .return-id {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 15px;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .edit-form {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .form-section h2 {
+            margin: 0 0 25px 0;
+            color: #333;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-section h2 i {
+            color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group label i {
+            color: #667eea;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-control:disabled {
+            background: #f8f9fa;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .radio-option:hover {
+            border-color: #667eea;
+        }
+
+        .radio-option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .radio-label {
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .current-info {
+            background: #e8f5e8;
+            border: 1px solid #c3e6c3;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .current-info h3 {
+            margin: 0 0 15px 0;
+            color: #2d5a2d;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .current-info h3 i {
+            color: #28a745;
+        }
+
+        .current-info p {
+            margin: 5px 0;
+            color: #2d5a2d;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-modern {
+            padding: 15px 30px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .btn-update {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-update:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #545b62;
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #f5c6cb;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-message i {
+            color: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .edit-form {
+                padding: 20px;
+            }
+
+            .form-section {
+                padding: 20px;
+            }
+
+            .radio-group {
+                flex-direction: column;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-modern {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="container">
+        <div class="edit-header">
+            <h1><i class="fas fa-edit"></i> Edit Return</h1>
+            <div class="return-id">Return #<%= returnData.return_id %></div>
+        </div>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <%= error %>
+            </div>
+        <% } %>
+
+        <form action="/returns/<%= returnData.return_id %>?_method=PUT" method="POST" class="edit-form">
+            <div class="form-section">
+                <h2><i class="fas fa-info-circle"></i> Current Return Information</h2>
+                <div class="current-info">
+                    <h3><i class="fas fa-eye"></i> Current Details</h3>
+                    <p><strong>Invoice:</strong> #<%= returnData.invoice_num %></p>
+                    <p><strong>Product:</strong> <%= returnData.product_code %></p>
+                    <p><strong>Quantity:</strong> <%= returnData.quantity_returned %></p>
+                    <p><strong>Refund Amount:</strong> $<%= returnData.refund_amount ? returnData.refund_amount.toFixed(2) : '0.00' %></p>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2><i class="fas fa-question-circle"></i> Return Reason</h2>
+                <div class="radio-group">
+                    <label class="radio-option <%= returnData.return_reason === 'Defective' ? 'selected' : '' %>">
+                        <input type="radio" name="return_reason" value="Defective" <%= returnData.return_reason === 'Defective' ? 'checked' : '' %>>
+                        <span class="radio-label"><i class="fas fa-exclamation-triangle"></i> Defective Product</span>
+                    </label>
+                    <label class="radio-option <%= returnData.return_reason === 'Wrong Item' ? 'selected' : '' %>">
+                        <input type="radio" name="return_reason" value="Wrong Item" <%= returnData.return_reason === 'Wrong Item' ? 'checked' : '' %>>
+                        <span class="radio-label"><i class="fas fa-exchange-alt"></i> Wrong Item Sent</span>
+                    </label>
+                    <label class="radio-option <%= returnData.return_reason === 'Not as Described' ? 'selected' : '' %>">
+                        <input type="radio" name="return_reason" value="Not as Described" <%= returnData.return_reason === 'Not as Described' ? 'checked' : '' %>>
+                        <span class="radio-label"><i class="fas fa-search"></i> Not as Described</span>
+                    </label>
+                    <label class="radio-option <%= returnData.return_reason === 'Changed Mind' ? 'selected' : '' %>">
+                        <input type="radio" name="return_reason" value="Changed Mind" <%= returnData.return_reason === 'Changed Mind' ? 'checked' : '' %>>
+                        <span class="radio-label"><i class="fas fa-undo"></i> Changed Mind</span>
+                    </label>
+                    <label class="radio-option <%= returnData.return_reason === 'Damaged in Transit' ? 'selected' : '' %>">
+                        <input type="radio" name="return_reason" value="Damaged in Transit" <%= returnData.return_reason === 'Damaged in Transit' ? 'checked' : '' %>>
+                        <span class="radio-label"><i class="fas fa-truck"></i> Damaged in Transit</span>
+                    </label>
+                    <label class="radio-option <%= returnData.return_reason === 'Other' ? 'selected' : '' %>">
+                        <input type="radio" name="return_reason" value="Other" <%= returnData.return_reason === 'Other' ? 'checked' : '' %>>
+                        <span class="radio-label"><i class="fas fa-ellipsis-h"></i> Other</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2><i class="fas fa-dollar-sign"></i> Refund Information</h2>
+                <div class="form-group">
+                    <label for="refund_amount"><i class="fas fa-money-bill-wave"></i> Refund Amount ($)</label>
+                    <input type="number" id="refund_amount" name="refund_amount" class="form-control"
+                           value="<%= returnData.refund_amount %>" step="0.01" min="0" required>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2><i class="fas fa-user-tie"></i> Processing Information</h2>
+                <div class="form-group">
+                    <label for="process_emp_id"><i class="fas fa-user-check"></i> Processed By</label>
+                    <select id="process_emp_id" name="process_emp_id" class="form-control" required>
+                        <% employees.forEach(emp => { %>
+                            <option value="<%= emp.emp_id %>" <%= emp.emp_id === returnData.process_emp_id ? 'selected' : '' %>>
+                                <%= emp.emp_name %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2><i class="fas fa-info-circle"></i> Important Notes</h2>
+                <div class="current-info">
+                    <p><i class="fas fa-lock"></i> <strong>Invoice and product information cannot be changed after return creation.</strong></p>
+                    <p><i class="fas fa-clock"></i> <strong>Changes will be reflected immediately in the system.</strong></p>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="submit" class="btn-modern btn-update">
+                    <i class="fas fa-save"></i> Update Return
+                </button>
+                <a href="/returns/<%= returnData.return_id %>" class="btn-modern btn-cancel">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <%- include('../partials/footer') %>
+
+    <script>
+        // Radio button selection styling
+        document.querySelectorAll('.radio-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options in the same group
+                this.parentElement.querySelectorAll('.radio-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                // Check the radio button
+                this.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const refund = document.getElementById('refund_amount').value;
+
+            if (refund < 0) {
+                alert('Refund amount cannot be negative');
+                e.preventDefault();
+                return;
+            }
+        });
+    </script>
+</body>
+</html>

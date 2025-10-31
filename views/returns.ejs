@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Returns - MetroMart</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <div class="container">
+        <h1>Returns Management</h1>
+        <a href="/returns/new" class="btn btn-primary">Process New Return</a>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Return ID</th>
+                        <th>Invoice #</th>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Quantity Returned</th>
+                        <th>Return Reason</th>
+                        <th>Refund Amount</th>
+                        <th>Return Date</th>
+                        <th>Processed By</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (returns && returns.length > 0) { %>
+                        <% returns.forEach(ret => { %>
+                            <tr>
+                                <td><%= ret.return_id %></td>
+                                <td><%= ret.invoice_num %></td>
+                                <td><%= ret.sales_invoices && ret.sales_invoices.customers ? ret.sales_invoices.customers.customer_name : 'Unknown' %></td>
+                                <td><%= ret.products ? ret.products.product_name : 'Unknown Product' %></td>
+                                <td><%= ret.quantity_returned %></td>
+                                <td><%= ret.return_reason %></td>
+                                <td>$<%= ret.refund_amount && typeof ret.refund_amount === 'number' ? ret.refund_amount.toFixed(2) : '0.00' %></td>
+                                <td><%= new Date(ret.return_date).toLocaleDateString() %></td>
+                                <td><%= ret.employees ? ret.employees.emp_name : 'Unknown' %></td>
+                                <td>
+                                    <a href="/returns/<%= ret.return_id %>" class="btn btn-secondary">View</a>
+                                    <a href="/returns/<%= ret.return_id %>/edit" class="btn btn-warning">Edit</a>
+                                    <form action="/returns/<%= ret.return_id %>?_method=DELETE" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this return?')">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="10" style="text-align: center;">No returns found</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+</body>
+</html>
