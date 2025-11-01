@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Employee | MetroMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <main class="container">
+    <h1 class="page-title">✏ Edit Employee Details</h1>
+
+    <section class="form-section">
+      <form action="/employees/edit/<%= employee.emp_id %>" method="POST" class="form-card">
+
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" name="emp_name" value="<%= employee.emp_name %>" required>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" value="<%= employee.email %>" required>
+        </div>
+
+        <div class="form-group">
+          <label>Mobile</label>
+          <input type="text" name="mobile" value="<%= employee.mobile %>" maxlength="10" required>
+        </div>
+
+        <div class="form-group">
+          <label>Salary (₹)</label>
+          <input type="number" name="salary" value="<%= employee.salary %>" required>
+        </div>
+
+        <div class="form-group">
+          <label>Department</label>
+          <select name="dep_id" required>
+            <% departments.forEach(dep => { %>
+              <option value="<%= dep.dep_id %>" <%= employee.dep_id === dep.dep_id ? 'selected' : '' %>><%= dep.dep_name %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="button-right" style="grid-column: span 2;">
+          <button type="submit" class="btn-primary">💾 Update Employee</button>
+          <a href="/employees" class="btn-secondary" style="margin-left: 10px;">⬅ Back</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

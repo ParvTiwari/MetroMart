@@ -66,10 +66,10 @@ router.post('/add', async (req, res) => {
   
   try {
     const insertQuery = `
-      INSERT INTO employees (emp_name, email, mobile, salary, dep_id)
-      VALUES ($1, $2, $3, $4, $5);
+      INSERT INTO employees (emp_name, email, mobile, salary)
+      VALUES ($1, $2, $3, $4)
     `;
-    await pool.query(insertQuery, [emp_name, email, mobile, salary, dep_id]);
+    await pool.query(insertQuery, [emp_name, email, mobile, salary]);
     res.redirect('/employees');
   } catch (err) {
     console.error(err);
@@ -90,7 +90,7 @@ router.get('/edit/:emp_id', async (req, res) => {
       pool.query(deptQuery)
     ]);
 
-    res.render('editEmployee', {
+    res.render('employees/edit', {
       employee: empResult.rows[0],
       departments: deptResult.rows
     });
@@ -108,10 +108,10 @@ router.post('/edit/:emp_id', async (req, res) => {
   try {
     const updateQuery = `
       UPDATE employees
-      SET emp_name = $1, email = $2, mobile = $3, salary = $4, dep_id = $5
-      WHERE emp_id = $6;
+      SET emp_name = $1, email = $2, mobile = $3, salary = $4
+      WHERE emp_id = $5
     `;
-    await pool.query(updateQuery, [emp_name, email, mobile, salary, dep_id, empId]);
+    await pool.query(updateQuery, [emp_name, email, mobile, salary, empId]);
     res.redirect('/employees');
   } catch (err) {
     console.error(err);

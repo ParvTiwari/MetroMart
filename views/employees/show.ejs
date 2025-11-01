@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Employees</title>
+</head>
+<body>
+  <h1>Employee List</h1>
+  <a href="/employees/new">➕ Add Employee</a>
+  <table border="1">
+    <tr>
+      <th>ID</th><th>Name</th><th>Email</th><th>Mobile</th><th>Salary</th><th>Department</th><th>Actions</th>
+    </tr>
+    <% employees.forEach(emp => { %>
+      <tr>
+        <td><%= emp.emp_id %></td>
+        <td><%= emp.emp_name %></td>
+        <td><%= emp.email %></td>
+        <td><%= emp.mobile %></td>
+        <td><%= emp.salary %></td>
+        <td><%= emp.dep_name %></td>
+        <td>
+          <a href="/employees/edit/<%= emp.emp_id %>">✏ Edit</a>
+          <a href="/employees/delete/<%= emp.emp_id %>" onclick="return confirm('Are you sure?')">🗑 Delete</a>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
+</body>
+</html>
