@@ -35,15 +35,6 @@
         <input type="number" name="salary" placeholder="Enter salary" required>
       </div>
 
-      <div class="form-group">
-        <label>Department</label>
-        <select name="dep_id" required>
-          <% departments.forEach(dep => { %>
-            <option value="<%= dep.dep_id %>"><%= dep.dep_name %></option>
-          <% }) %>
-        </select>
-      </div>
-
       <button type="submit" class="btn-primary">✅ Add Employee</button>
     </form>
   </section>
