@@ -443,3 +443,26 @@ footer a:hover {
 .btn-filter:hover {
   background: #0056b3;
 }
+
+/* --- Edit Form Specific Styling --- */
+.form-section .button-right {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn-secondary {
+  background: #ccc;
+  color: #000;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #b5b5b5;
+  transform: translateY(-1px);
+}
