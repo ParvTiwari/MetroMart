@@ -145,3 +145,54 @@ create trigger trg_loyalty_points
 before insert on sales_invoices
 for each row
 execute function calculate_loyalty_points();
+
+create or replace function reduce_product_stock_after_sale()
+returns trigger as $$
+begin
+    update products
+    set stock = stock - new.quantity,
+        last_updated = current_timestamp
+    where product_code = new.product_code;
+
+    return new;
+end;
+$$ language plpgsql;
+
+create trigger trg_reduce_stock_after_sale
+after insert on sales_details
+for each row
+execute function reduce_product_stock_after_sale();
+
+create or replace function increase_product_stock_after_supply()
+returns trigger as $$
+begin
+    update products
+    set stock = stock + new.quantity,
+        last_updated = current_timestamp
+    where product_code = new.product_code;
+
+    return new;
+end;
+$$ language plpgsql;
+
+create trigger trg_increase_stock_after_supply
+after insert on supply_order_details
+for each row
+execute function increase_product_stock_after_supply();
+
+create or replace function increase_stock_after_return()
+returns trigger as $$
+begin
+    update products
+    set stock = stock + new.quantity_returned,
+        last_updated = current_timestamp
+    where product_code = new.product_code;
+
+    return new;
+end;
+$$ language plpgsql;
+
+create trigger trg_increase_stock_after_return
+after insert on returns
+for each row
+execute function increase_stock_after_return();
