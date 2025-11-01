@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Department | MetroMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <main class="container">
+    <h1 class="page-title">✏ Edit Department Details</h1>
+
+    <section class="form-section">
+      <form action="/departments/edit/<%= department.dep_id %>" method="POST" class="form-card">
+
+        <div class="form-group">
+          <label>Department Name</label>
+          <input 
+            type="text" 
+            name="dep_name" 
+            value="<%= department.dep_name %>" 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Supervisor</label>
+          <select name="supervisor_id">
+            <option value="">-- Select Supervisor --</option>
+            <% employees.forEach(emp => { %>
+              <option value="<%= emp.emp_id %>" 
+                <%= department.supervisor_id === emp.emp_id ? 'selected' : '' %>>
+                <%= emp.emp_name %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="button-right" style="grid-column: span 2;">
+          <button type="submit" class="btn-primary">💾 Update Department</button>
+          <a href="/departments" class="btn-secondary" style="margin-left: 10px;">⬅ Back</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

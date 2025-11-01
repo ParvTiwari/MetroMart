@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Departments | MetroMart</title>
+  <link rel="stylesheet" href="/styles/style.css">
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <main class="container">
+    <div class="page-header">
+      <h1>🏢 Departments</h1>
+      <a href="/departments/new" class="btn btn-primary">➕ Add Department</a>
+    </div>
+
+    <% if (departments.length > 0) { %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Department Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% departments.forEach(dep => { %>
+            <tr>
+              <td><%= dep.dep_id %></td>
+              <td><%= dep.dep_name %></td>
+              <td>
+                <a href="/departments/edit/<%= dep.dep_id %>" class="btn btn-warning">✏ Edit</a>
+                <form action="/departments/delete/<%= dep.dep_id %>" method="POST" style="display:inline;">
+                  <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this department?')">🗑 Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p>No departments found.</p>
+    <% } %>
+  </main>
+</body>
+</html>

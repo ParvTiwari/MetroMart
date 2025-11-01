@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Departments | MetroMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+    <h1 class="page-title">🏢 Department Management</h1>
+
+    <!-- ✅ Add Department Form -->
+    <section class="form-section">
+      <h2 class="section-title">➕ Add New Department</h2>
+      <br>
+      <form action="/departments/add" method="POST" class="form-card">
+        <div class="form-group">
+          <label>Department Name</label>
+          <input type="text" name="dep_name" placeholder="Enter department name" required>
+        </div>
+
+        <div class="form-group">
+          <label>Supervisor</label>
+          <select name="supervisor_id" required>
+            <option value="">Select Supervisor</option>
+            <% employees.forEach(emp => { %>
+              <option value="<%= emp.emp_id %>"><%= emp.emp_name %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-primary">✅ Add Department</button>
+      </form>
+    </section>
+
+    <!-- ✅ Search & Sort Bar -->
+    <section class="filter-sort-bar">
+      <form action="/departments" method="GET">
+        <input
+          type="text"
+          name="search"
+          placeholder="🔍 Search by name..."
+          value="<%= typeof search !== 'undefined' ? search : '' %>"
+        >
+
+        <select name="sort">
+          <option value="">Sort By</option>
+          <option value="name_asc" <%= sort === 'name_asc' ? 'selected' : '' %>>Name (A-Z)</option>
+          <option value="name_desc" <%= sort === 'name_desc' ? 'selected' : '' %>>Name (Z-A)</option>
+          <option value="sup" <%= sort === 'sup' ? 'selected' : '' %>>Supervisor</option>
+        </select>
+
+        <button type="submit" class="btn-filter">Apply</button>
+      </form>
+    </section>
+
+    <!-- ✅ Department Table -->
+    <section class="table-section">
+      <h2 class="section-title">📄 Department List</h2>
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Department Name</th>
+            <th>Supervisor</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% departments.forEach(dep => { %>
+            <tr>
+              <td><%= dep.dep_id %></td>
+              <td><%= dep.dep_name %></td>
+              <td><%= dep.supervisor_name || '—' %></td>
+              <td>
+                <a href="/departments/edit/<%= dep.dep_id %>" class="btn-edit">✏ Edit</a>
+                <a href="/departments/delete/<%= dep.dep_id %>" class="btn-delete" onclick="return confirm('Are you sure?')">🗑 Delete</a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>
