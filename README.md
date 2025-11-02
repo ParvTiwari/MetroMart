@@ -14,6 +14,23 @@ MetroMart aims to provide features such as:
 - Comprehensive product catalog with categories and detailed information
 - Efficient inventory management system
 
+## Database Setup
+
+### Initializing the Database
+
+Before using the application, you need to create the database tables. The application connects to Supabase Postgres.
+
+1. Open your Supabase project dashboard
+2. Go to the SQL Editor
+3. Copy and paste the contents of `schema.sql`
+4. Execute the script to create all tables, triggers, and constraints
+5. (Optional) Run the contents of `ddl.sql` to load sample data
+
+Alternatively, if you have a local Postgres database configured, you can use:
+```bash
+npm run init-db
+```
+
 ## Seed Scripts
 
 ### Sales Seed Script
