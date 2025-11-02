@@ -18,6 +18,7 @@ import customerRoutes from "./routes/customers.js";
 import departmentRoutes from "./routes/departments.js";
 import salesRoutes from "./routes/sales.js";
 import returnRoutes from "./routes/returns.js";
+import dashboardRoutes from "./routes/dashboard.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -66,6 +67,7 @@ app.get("/", (req, res) => res.render("index"));
 })();
 
 // 🛣️ Route mounting
+app.use("/dashboard", dashboardRoutes);
 app.use("/employees", employeeRoutes);
 app.use("/departments", departmentRoutes);
 app.use("/products", productRoutes);
@@ -79,4 +81,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Server running at: http://localhost:${PORT}`);
 });
-
