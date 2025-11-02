@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Products | MetroMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+    <h1 class="page-title">🛒 Product Management</h1>
+
+    <!-- ✅ Add Product Form -->
+    <section class="form-section">
+      <h2 class="section-title">➕ Add New Product</h2>
+      <br>
+      <form action="/products/add" method="POST" class="form-card">
+        <div class="form-group">
+          <label>Product Code</label>
+          <input type="text" name="product_code" placeholder="Enter unique code" required>
+        </div>
+
+        <div class="form-group">
+          <label>Product Name</label>
+          <input type="text" name="product_name" placeholder="Enter product name" required>
+        </div>
+
+        <div class="form-group">
+          <label>Price</label>
+          <input type="number" step="0.01" name="price" placeholder="Enter price" required>
+        </div>
+
+        <div class="form-group">
+          <label>Stock</label>
+          <input type="number" name="stock" placeholder="Enter stock quantity" required>
+        </div>
+
+        <div class="form-group">
+          <label>Reorder Level</label>
+          <input type="number" name="reorder_level" placeholder="Enter reorder level" required>
+        </div>
+
+        <div class="form-group">
+          <label>Department</label>
+          <select name="dep_num" required>
+            <option value="">Select Department</option>
+            <% departments.forEach(dep => { %>
+              <option value="<%= dep.dep_id %>"><%= dep.dep_name %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-primary">✅ Add Product</button>
+      </form>
+    </section>
+
+    <!-- ✅ Search & Sort -->
+    <section class="filter-sort-bar">
+      <form action="/products" method="GET">
+        <input
+          type="text"
+          name="search"
+          placeholder="🔍 Search by name or department..."
+          value="<%= typeof search !== 'undefined' ? search : '' %>"
+        >
+
+        <select name="sort">
+          <option value="">Sort By</option>
+          <option value="name_asc" <%= sort === 'name_asc' ? 'selected' : '' %>>Name (A-Z)</option>
+          <option value="name_desc" <%= sort === 'name_desc' ? 'selected' : '' %>>Name (Z-A)</option>
+          <option value="price_asc" <%= sort === 'price_asc' ? 'selected' : '' %>>Price (Low to High)</option>
+          <option value="price_desc" <%= sort === 'price_desc' ? 'selected' : '' %>>Price (High to Low)</option>
+        </select>
+
+        <button type="submit" class="btn-filter">Apply</button>
+      </form>
+    </section>
+
+    <!-- ✅ Product Table -->
+    <section class="table-section">
+      <h2 class="section-title">📄 Product List</h2>
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Reorder</th>
+            <th>Department</th>
+            <th>Last Updated</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% products.forEach(p => { %>
+            <tr>
+              <td><%= p.product_code %></td>
+              <td><%= p.product_name %></td>
+              <td>₹<%= p.price.toFixed(2) %></td>
+              <td><%= p.stock %></td>
+              <td><%= p.reorder_level %></td>
+              <td><%= p.department_name %></td>
+              <td><%= new Date(p.last_updated).toLocaleString() %></td>
+              <td><%= p.is_active ? '✅ Active' : '❌ Inactive' %></td>
+              <td>
+                <a href="/products/edit/<%= p.product_code %>" class="btn-edit">✏ Edit</a>
+                <a href="/products/delete/<%= p.product_code %>" class="btn-delete" onclick="return confirm('Are you sure?')">🗑 Delete</a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>
