@@ -8,7 +8,7 @@
     <link href="/css/style.css" rel="stylesheet">
 </head>
 <body>
-    <%- include('partials/header') %>
+    <%- include('../partials/header') %>
 
     <div class="container mt-4">
         <div class="row justify-content-center">
@@ -31,7 +31,7 @@
 
                             <div class="mb-3">
                                 <label for="mobile" class="form-label">Mobile Number *</label>
-                                <input type="tel" class="form-control" id="mobile" name="mobile" name="mobile" value="<%= supplier.mobile %>" pattern="[0-9]{10}" required>
+                                <input type="tel" class="form-control" id="mobile" name="mobile" value="<%= supplier.mobile %>" pattern="[0-9]{10}" required>
                                 <div class="form-text">10-digit mobile number</div>
                             </div>
 
@@ -61,7 +61,7 @@
         </div>
     </div>
 
-    <%- include('partials/footer') %>
+    <%- include('../partials/footer') %>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
