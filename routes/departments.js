@@ -1,5 +1,5 @@
 import express from 'express';
-import pool from "../db/pool.js";
+import pool, { supabase } from "../db/pool.js";
 const router = express.Router();
 
 // ✅ GET All Departments (with optional search/sort)
@@ -40,8 +40,39 @@ router.get("/", async (req, res) => {
       sort
     });
   } catch (err) {
-    console.error("Error fetching departments:", err);
-    res.status(500).send("Error fetching departments");
+    console.warn('PG query failed for departments, falling back to Supabase client:', err.message || err);
+    try {
+      const { data: departmentsData, error: depErr } = await supabase.from('department').select('dep_id, dep_name, supervisor_id').order('dep_name', { ascending: true });
+      const { data: employeesData, error: empErr } = await supabase.from('employees').select('emp_id, emp_name').order('emp_name', { ascending: true });
+      if (depErr || empErr) throw depErr || empErr;
+
+      // Simple server-side search/filter/sort emulation to match SQL behaviour
+      let filtered = departmentsData;
+      if (search && search.trim() !== '') {
+        const s = search.toLowerCase();
+        filtered = filtered.filter(d => (d.dep_name || '').toLowerCase().includes(s));
+      }
+
+      if (sort === 'name_asc') filtered.sort((a,b) => (a.dep_name||'').localeCompare(b.dep_name||''));
+      else if (sort === 'name_desc') filtered.sort((a,b) => (b.dep_name||'').localeCompare(a.dep_name||''));
+      else if (sort === 'sup') filtered.sort((a,b) => {
+        const aSup = employeesData.find(e => e.emp_id === a.supervisor_id)?.emp_name || '';
+        const bSup = employeesData.find(e => e.emp_id === b.supervisor_id)?.emp_name || '';
+        return aSup.localeCompare(bSup);
+      });
+      else filtered.sort((a,b) => Number(a.dep_id) - Number(b.dep_id));
+
+      // Enrich with supervisor_name for the template (SQL version returns this column)
+      const enriched = filtered.map(d => {
+        const sup = employeesData.find(e => e.emp_id === d.supervisor_id);
+        return { ...d, supervisor_name: sup ? sup.emp_name : null };
+      });
+
+      res.render('departments', { departments: enriched, employees: employeesData, search, sort });
+    } catch (supErr) {
+      console.error('Supabase fallback failed for departments route:', supErr);
+      res.status(500).send('Error fetching departments');
+    }
   }
 });
 
@@ -56,8 +87,15 @@ router.post("/add", async (req, res) => {
     );
     res.redirect("/departments");
   } catch (err) {
-    console.error("Error adding department:", err);
-    res.status(500).send("Error adding department");
+    console.warn('PG insert failed for department, falling back to Supabase:', err.message || err);
+    try {
+      const { data, error } = await supabase.from('department').insert([{ dep_name, supervisor_id: supervisor_id || null }]);
+      if (error) throw error;
+      res.redirect('/departments');
+    } catch (supErr) {
+      console.error('Error adding department via Supabase:', supErr);
+      res.status(500).send('Error adding department');
+    }
   }
 });
 
@@ -84,8 +122,15 @@ router.get("/edit/:dep_id", async (req, res) => {
       employees: empResult.rows
     });
   } catch (err) {
-    console.error("Error loading edit page:", err);
-    res.status(500).send("Error loading edit page");
+    console.warn('PG edit load failed for department, trying Supabase:', err.message || err);
+    try {
+      const { data: department } = await supabase.from('department').select('dep_id, dep_name, supervisor_id').eq('dep_id', req.params.dep_id).single();
+      const { data: employees } = await supabase.from('employees').select('emp_id, emp_name').order('emp_name', { ascending: true });
+      res.render('departments/edit', { department, employees });
+    } catch (supErr) {
+      console.error('Error loading edit page via Supabase:', supErr);
+      res.status(500).send('Error loading edit page');
+    }
   }
 });
 
@@ -101,8 +146,15 @@ router.post("/edit/:dep_id", async (req, res) => {
     );
     res.redirect("/departments");
   } catch (err) {
-    console.error("Error updating department:", err);
-    res.status(500).send("Error updating department");
+    console.warn('PG update failed for department, falling back to Supabase:', err.message || err);
+    try {
+      const { data, error } = await supabase.from('department').update({ dep_name, supervisor_id: supervisor_id || null }).eq('dep_id', depId);
+      if (error) throw error;
+      res.redirect('/departments');
+    } catch (supErr) {
+      console.error('Error updating department via Supabase:', supErr);
+      res.status(500).send('Error updating department');
+    }
   }
 });
 
@@ -113,8 +165,15 @@ router.get("/delete/:dep_id", async (req, res) => {
     await pool.query(`DELETE FROM department WHERE dep_id = $1;`, [depId]);
     res.redirect("/departments");
   } catch (err) {
-    console.error("Error deleting department:", err);
-    res.status(500).send("Error deleting department");
+    console.warn('PG delete failed for department, falling back to Supabase:', err.message || err);
+    try {
+      const { data, error } = await supabase.from('department').delete().eq('dep_id', req.params.dep_id);
+      if (error) throw error;
+      res.redirect('/departments');
+    } catch (supErr) {
+      console.error('Error deleting department via Supabase:', supErr);
+      res.status(500).send('Error deleting department');
+    }
   }
 });
 
