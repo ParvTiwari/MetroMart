@@ -14,7 +14,9 @@ MetroMart aims to provide features such as:
 - Comprehensive product catalog with categories and detailed information
 - Efficient inventory management system
 
-## Sales Seed Script
+## Seed Scripts
+
+### Sales Seed Script
 
 A ready-to-run Supabase/Postgres seeding script lives at `scripts/sample_sales_seed.sql`. To load sample invoices:
 
@@ -24,3 +26,13 @@ A ready-to-run Supabase/Postgres seeding script lives at `scripts/sample_sales_s
 4. (Optional) Run the commented `SELECT` at the bottom to inspect the newly inserted rows.
 
 The script is idempotent per execution (it always creates fresh invoices) and keeps the logic lightweight while demonstrating end-to-end sales data.
+
+### Suppliers Seed Script
+
+A simple seed script for suppliers is available at `scripts/sample_suppliers_seed.sql`. To populate test suppliers:
+
+1. Open the Supabase SQL editor and paste the file contents.
+2. Execute the script; it inserts five sample suppliers with contact information.
+3. Run the verification query at the bottom to confirm insertion.
+
+This provides a foundation for testing supplier-related features and supply order management.

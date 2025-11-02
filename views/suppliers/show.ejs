@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= supplier.supplier_name %> - MetroMart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><%= supplier.supplier_name %></h1>
+            <div>
+                <a href="/suppliers/<%= supplier.supplier_id %>/edit" class="btn btn-primary">Edit Supplier</a>
+                <a href="/suppliers" class="btn btn-secondary">Back to Suppliers</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3>Supplier Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Supplier Name:</strong> <%= supplier.supplier_name %></p>
+                                <p><strong>Contact Person:</strong> <%= supplier.contact_person %></p>
+                                <p><strong>Mobile:</strong> <%= supplier.mobile %></p>
+                                <p><strong>Email:</strong> <%= supplier.email %></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Address:</strong><br><%= supplier.address %></p>
+                                <p><strong>Registration Date:</strong> <%= supplier.registration_date %></p>
+                                <p><strong>Status:</strong>
+                                    <span class="badge <%= supplier.is_active ? 'bg-success' : 'bg-secondary' %>">
+                                        <%= supplier.is_active ? 'Active' : 'Inactive' %>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3>Supply Orders</h3>
+                        <span class="badge bg-info"><%= supplyOrders.length %> orders</span>
+                    </div>
+                    <div class="card-body">
+                        <% if (supplyOrders && supplyOrders.length > 0) { %>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Order #</th>
+                                            <th>Date</th>
+                                            <th>Items</th>
+                                            <th>Total Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% supplyOrders.forEach(order => { %>
+                                            <tr>
+                                                <td><%= order.order_num %></td>
+                                                <td><%= order.order_date %></td>
+                                                <td><%= order.items_count %></td>
+                                                <td>₹<%= order.total_amount.toFixed(2) %></td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } else { %>
+                            <p class="text-muted">No supply orders found for this supplier.</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Actions</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="/suppliers/<%= supplier.supplier_id %>/edit" class="btn btn-outline-primary">Edit Supplier</a>
+                            <form action="/suppliers/<%= supplier.supplier_id %>/delete" method="POST" onsubmit="return confirm('Are you sure you want to deactivate this supplier?')">
+                                <button type="submit" class="btn btn-outline-danger w-100">Deactivate Supplier</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
