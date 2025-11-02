@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales - MetroMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <div class="container">
+    <h1 class="page-title">Sales Overview</h1>
+
+    <div class="button-right" style="margin-bottom: 1rem;">
+      <a class="btn-primary" href="/sales/new">Record Sale</a>
+    </div>
+
+    <section class="filter-sort-bar">
+      <form method="GET" action="/sales">
+        <input type="date" name="startDate" value="<%= filters.startDate || '' %>">
+        <input type="date" name="endDate" value="<%= filters.endDate || '' %>">
+
+        <select name="customer_id">
+          <option value="">All Customers</option>
+          <% customers.forEach(c => { %>
+            <option value="<%= c.customer_id %>" <%= filters.customer_id == c.customer_id ? 'selected' : '' %>>
+              <%= c.customer_name %>
+            </option>
+          <% }) %>
+        </select>
+
+        <select name="emp_id">
+          <option value="">All Employees</option>
+          <% employees.forEach(e => { %>
+            <option value="<%= e.emp_id %>" <%= filters.emp_id == e.emp_id ? 'selected' : '' %>>
+              <%= e.emp_name %>
+            </option>
+          <% }) %>
+        </select>
+
+        <button class="btn-filter" type="submit">Apply</button>
+        <a class="btn-secondary" href="/sales">Clear</a>
+      </form>
+    </section>
+
+    <section class="summary-cards">
+      <div class="cards">
+        <div class="card">
+          <div class="icon">🧾</div>
+          <h3>Total Invoices</h3>
+          <p><strong><%= summary.totalInvoices %></strong></p>
+        </div>
+        <div class="card">
+          <div class="icon">📦</div>
+          <h3>Total Units</h3>
+          <p><strong><%= summary.totalUnits %></strong></p>
+        </div>
+        <div class="card">
+          <div class="icon">💰</div>
+          <h3>Gross Sales</h3>
+          <p><strong>$<%= summary.totalGross.toFixed(2) %></strong></p>
+        </div>
+        <div class="card">
+          <div class="icon">🎯</div>
+          <h3>Avg Ticket</h3>
+          <p><strong>$<%= summary.avgTicket.toFixed(2) %></strong></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="table-section">
+      <h2 class="section-title">Recent Sales</h2>
+      <div class="table-wrapper">
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Sold By</th>
+              <th>Items</th>
+              <th>Subtotal</th>
+              <th>Discount</th>
+              <th>Tax</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (invoices.length === 0) { %>
+              <tr>
+                <td colspan="10">No invoices found for the selected filters.</td>
+              </tr>
+            <% } else { %>
+              <% invoices.forEach(inv => { %>
+                <tr>
+                  <td><%= inv.invoice_num %></td>
+                  <td><%= new Date(inv.invoice_timestamp).toLocaleString() %></td>
+                  <td><%= inv.customer_name %></td>
+                  <td><%= inv.emp_name %></td>
+                  <td><%= inv.total_items %></td>
+                  <td>$<%= inv.sub_total.toFixed(2) %></td>
+                  <td>$<%= inv.discount_applied.toFixed(2) %></td>
+                  <td>$<%= inv.tax_amount.toFixed(2) %></td>
+                  <td><strong>$<%= inv.final_amount.toFixed(2) %></strong></td>
+                  <td><a class="btn-secondary" href="/sales/<%= inv.invoice_num %>">View</a></td>
+                </tr>
+              <% }) %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="table-section">
+      <h2 class="section-title">Top Products</h2>
+      <div class="table-wrapper">
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Units Sold</th>
+              <th>Revenue</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (topProducts.length === 0) { %>
+              <tr>
+                <td colspan="3">No sales data yet.</td>
+              </tr>
+            <% } else { %>
+              <% topProducts.forEach(item => { %>
+                <tr>
+                  <td><%= item.product_name %></td>
+                  <td><%= item.units_sold %></td>
+                  <td>$<%= item.revenue.toFixed(2) %></td>
+                </tr>
+              <% }) %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

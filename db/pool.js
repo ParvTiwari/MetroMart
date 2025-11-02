@@ -51,6 +51,8 @@ const { Pool } = pg;
 let pool;
 // Accept multiple env var naming conventions so local .env files like DB_USER/DB_PASS work.
 const hasPgEnv = Boolean(
+  // include SUPABASE_DB_URL as a valid indicator of a Postgres connection
+  process.env.SUPABASE_DB_URL ||
   process.env.DATABASE_URL ||
     process.env.PGHOST ||
     process.env.PGUSER ||
@@ -62,6 +64,8 @@ const hasPgEnv = Boolean(
     process.env.DB_PASS ||
     process.env.DB_NAME
 );
+
+let hasPgConnection = hasPgEnv;
 
 if (hasPgEnv) {
   const poolConfig = {};
@@ -81,7 +85,24 @@ if (hasPgEnv) {
     }
   }
   
-  pool = new Pool(poolConfig);
+  // If connecting to a Supabase-hosted Postgres URL, enable TLS with relaxed cert
+  // verification (Supabase uses managed certs; Node may require rejectUnauthorized=false).
+  try {
+    if (poolConfig.connectionString && (poolConfig.connectionString.includes('supabase.co') || process.env.SUPABASE_DB_URL)) {
+      poolConfig.ssl = { rejectUnauthorized: false };
+    }
+
+    pool = new Pool(poolConfig);
+
+    // Attach an error handler to catch idle client errors
+    pool.on('error', (err) => {
+      console.error('Unexpected error on idle PG client', err);
+    });
+  } catch (err) {
+    console.error('Failed to create PG pool:', err);
+    // Fallback to a benign mock so the app pages can still render in local dev
+    pool = { query: async () => ({ rows: [] }) };
+  }
 } else {
   // Provide a friendly mock pool that returns empty results so the app can start
   // without a Postgres connection for local UI testing.

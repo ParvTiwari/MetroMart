@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Sale - MetroMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <div class="container">
+    <h1 class="page-title">Record New Sale</h1>
+
+    <div class="form-section">
+      <form id="sale-form" action="/sales" method="POST">
+        <div class="form-card">
+          <div class="form-group">
+            <label for="customer_id">Customer (optional)</label>
+            <select name="customer_id" id="customer_id">
+              <option value="">Walk-in Customer</option>
+              <% customers.forEach(c => { %>
+                <option value="<%= c.customer_id %>"><%= c.customer_name %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="emp_id">Salesperson<span style="color:#d62828">*</span></label>
+            <select name="emp_id" id="emp_id" required>
+              <option value="">Select employee</option>
+              <% employees.forEach(e => { %>
+                <option value="<%= e.emp_id %>"><%= e.emp_name %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="discount_applied">Discount ($)</label>
+            <input type="number" step="0.01" min="0" name="discount_applied" id="discount_applied" value="0">
+          </div>
+
+          <div class="form-group">
+            <label for="tax_rate">Tax Rate (%)</label>
+            <input type="number" step="0.01" min="0" name="tax_rate" id="tax_rate" value="5">
+          </div>
+        </div>
+
+        <div class="table-section">
+          <div class="button-right" style="justify-content:flex-start; gap:0.75rem;">
+            <button type="button" class="btn-secondary" id="add-item-btn">Add Item</button>
+            <button type="button" class="btn-delete" id="clear-items-btn">Clear Items</button>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="styled-table">
+              <thead>
+                <tr>
+                  <th style="width:35%;">Product</th>
+                  <th style="width:15%;">Stock</th>
+                  <th style="width:15%;">Quantity</th>
+                  <th style="width:20%;">Unit Price</th>
+                  <th style="width:15%;">Line Total</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="items-body"></tbody>
+            </table>
+          </div>
+
+          <div class="summary-grid" style="display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-top:1.5rem;">
+            <div class="card">
+              <h3>Subtotal</h3>
+              <p>$<span id="subtotal-view">0.00</span></p>
+            </div>
+            <div class="card">
+              <h3>Discount</h3>
+              <p>$<span id="discount-view">0.00</span></p>
+            </div>
+            <div class="card">
+              <h3>Tax</h3>
+              <p>$<span id="tax-view">0.00</span></p>
+            </div>
+            <div class="card">
+              <h3>Grand Total</h3>
+              <p><strong>$<span id="grand-total-view">0.00</span></strong></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="button-right">
+          <button type="submit" class="btn-primary">Save Invoice</button>
+          <a href="/sales" class="btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <script>
+    const products = <%- JSON.stringify(products || []) %>;
+    const itemsBody = document.getElementById('items-body');
+    const addBtn = document.getElementById('add-item-btn');
+    const clearBtn = document.getElementById('clear-items-btn');
+    const discountInput = document.getElementById('discount_applied');
+    const taxRateInput = document.getElementById('tax_rate');
+
+    const subtotalView = document.getElementById('subtotal-view');
+    const discountView = document.getElementById('discount-view');
+    const taxView = document.getElementById('tax-view');
+    const grandTotalView = document.getElementById('grand-total-view');
+
+    const createRow = () => {
+      const row = document.createElement('tr');
+      row.className = 'item-row';
+
+      const optionHtml = ['<option value="">Select product</option>']
+        .concat(products.map((p) => '<option value="' + p.product_code + '">' + p.product_name + '</option>'))
+        .join('');
+
+      row.innerHTML = `
+        <td>
+          <select name="product_code[]" class="product-select" required>
+            ${optionHtml}
+          </select>
+        </td>
+        <td class="stock-cell">—</td>
+        <td>
+          <input type="number" name="quantity[]" class="qty-input" min="1" value="1" required>
+        </td>
+        <td>
+          <input type="number" name="selling_price[]" class="price-input" step="0.01" min="0.01" value="0.00" required>
+        </td>
+        <td>$<span class="line-total">0.00</span></td>
+        <td>
+          <button type="button" class="btn-delete remove-row-btn">Remove</button>
+        </td>
+      `;
+      itemsBody.appendChild(row);
+      attachRowEvents(row);
+      updateTotals();
+    };
+
+    const attachRowEvents = (row) => {
+      const productSelect = row.querySelector('.product-select');
+      const qtyInput = row.querySelector('.qty-input');
+      const priceInput = row.querySelector('.price-input');
+      const removeBtn = row.querySelector('.remove-row-btn');
+
+      productSelect.addEventListener('change', async () => {
+        const code = productSelect.value;
+        const stockCell = row.querySelector('.stock-cell');
+
+        if (!code) {
+          stockCell.textContent = '—';
+          priceInput.value = '0.00';
+          updateTotals();
+          return;
+        }
+
+        const localProduct = products.find((p) => p.product_code === code);
+        if (localProduct) {
+          stockCell.textContent = localProduct.stock ?? '—';
+          priceInput.value = Number(localProduct.price || 0).toFixed(2);
+          updateTotals();
+        } else {
+          stockCell.textContent = '…';
+          try {
+            const res = await fetch(`/sales/api/products/${code}`);
+            if (!res.ok) throw new Error('Fetch failed');
+            const data = await res.json();
+            stockCell.textContent = data.stock ?? '—';
+            priceInput.value = Number(data.price || 0).toFixed(2);
+            updateTotals();
+          } catch (_) {
+            stockCell.textContent = 'n/a';
+          }
+        }
+      });
+
+      const recalc = () => updateTotals();
+
+      qtyInput.addEventListener('input', recalc);
+      priceInput.addEventListener('input', recalc);
+      discountInput.addEventListener('input', recalc);
+      taxRateInput.addEventListener('input', recalc);
+
+      removeBtn.addEventListener('click', () => {
+        row.remove();
+        updateTotals();
+      });
+    };
+
+    const updateTotals = () => {
+      let subtotal = 0;
+
+      itemsBody.querySelectorAll('.item-row').forEach((row) => {
+        const qty = Number(row.querySelector('.qty-input').value) || 0;
+        const price = Number(row.querySelector('.price-input').value) || 0;
+        const line = qty * price;
+        subtotal += line;
+        row.querySelector('.line-total').textContent = line.toFixed(2);
+      });
+
+      const discount = Math.max(0, Math.min(Number(discountInput.value) || 0, subtotal));
+      const taxBase = subtotal - discount;
+      const taxRate = Math.max(0, Number(taxRateInput.value) || 0);
+      const tax = taxBase > 0 ? (taxBase * taxRate) / 100 : 0;
+      const grand = taxBase + tax;
+
+      subtotalView.textContent = subtotal.toFixed(2);
+      discountView.textContent = discount.toFixed(2);
+      taxView.textContent = tax.toFixed(2);
+      grandTotalView.textContent = grand.toFixed(2);
+    };
+
+    addBtn.addEventListener('click', () => createRow());
+    clearBtn.addEventListener('click', () => {
+      itemsBody.innerHTML = '';
+      updateTotals();
+      createRow();
+    });
+
+    if (itemsBody.children.length === 0) {
+      createRow();
+    } else {
+      itemsBody.querySelectorAll('.item-row').forEach(attachRowEvents);
+      updateTotals();
+    }
+  </script>
+</body>
+</html>

@@ -13,3 +13,14 @@ MetroMart aims to provide features such as:
 - User-friendly shopping cart and seamless checkout process
 - Comprehensive product catalog with categories and detailed information
 - Efficient inventory management system
+
+## Sales Seed Script
+
+A ready-to-run Supabase/Postgres seeding script lives at `scripts/sample_sales_seed.sql`. To load sample invoices:
+
+1. Ensure at least one employee and one active product exist (customers are optional).
+2. Open the Supabase SQL editor and paste the file contents.
+3. Execute the script; it inserts three invoices plus associated line items, automatically calculating totals.
+4. (Optional) Run the commented `SELECT` at the bottom to inspect the newly inserted rows.
+
+The script is idempotent per execution (it always creates fresh invoices) and keeps the logic lightweight while demonstrating end-to-end sales data.

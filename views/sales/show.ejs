@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice #<%= invoice.invoice_num %> - MetroMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <div class="container" style="text-align:left;">
+    <div class="button-right" style="justify-content:flex-end; gap:0.75rem;">
+      <a class="btn-secondary" href="/sales">Back to Sales</a>
+      <button onclick="window.print()" class="btn-primary" type="button">Print</button>
+    </div>
+
+    <section class="form-section" style="margin-top:1rem;">
+      <h1 class="section-title" style="margin-bottom:1rem;">Invoice #<%= invoice.invoice_num %></h1>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.5rem;">
+        <div class="card">
+          <h3>Date & Time</h3>
+          <p><%= new Date(invoice.invoice_timestamp).toLocaleString() %></p>
+        </div>
+        <div class="card">
+          <h3>Customer</h3>
+          <p>
+            <strong><%= invoice.customer_name %></strong><br>
+            <% if (invoice.customer_email) { %><small><%= invoice.customer_email %></small><br><% } %>
+            <% if (invoice.customer_mobile) { %><small><%= invoice.customer_mobile %></small><% } %>
+          </p>
+        </div>
+        <div class="card">
+          <h3>Salesperson</h3>
+          <p><%= invoice.emp_name %></p>
+        </div>
+        <div class="card">
+          <h3>Loyalty Points Earned</h3>
+          <p><strong><%= invoice.loyalty_points_earned %></strong></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="table-section">
+      <h2 class="section-title">Line Items</h2>
+      <div class="table-wrapper">
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Product Code</th>
+              <th>Qty</th>
+              <th>Unit Price</th>
+              <th>Line Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% items.forEach(item => { %>
+              <tr>
+                <td><%= item.product_name %></td>
+                <td><%= item.product_code %></td>
+                <td><%= item.quantity %></td>
+                <td>$<%= item.selling_price.toFixed(2) %></td>
+                <td>$<%= item.total.toFixed(2) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="table-section" style="max-width:420px; margin-left:auto;">
+      <table class="styled-table">
+        <tbody>
+          <tr>
+            <th style="width:50%;">Subtotal</th>
+            <td>$<%= invoice.sub_total.toFixed(2) %></td>
+          </tr>
+          <tr>
+            <th>Discount</th>
+            <td>$<%= invoice.discount_applied.toFixed(2) %></td>
+          </tr>
+          <tr>
+            <th>Tax</th>
+            <td>$<%= invoice.tax_amount.toFixed(2) %></td>
+          </tr>
+          <tr>
+            <th>Grand Total</th>
+            <td><strong>$<%= invoice.final_amount.toFixed(2) %></strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>
