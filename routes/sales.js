@@ -540,13 +540,21 @@ router.get('/api/products/:code', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  if (typeof pool.connect !== 'function') {
-    console.error('Sales creation attempted without Postgres connection');
-    return res.status(503).send('Sales creation requires direct Postgres connection.');
-  }
-
-  const client = await pool.connect();
+  // Try to use PG pool + transaction. If connection fails (e.g. tenant/user error),
+  // fall back to using the Supabase client to perform inserts.
+  let client = null;
   let started = false;
+  let usingPg = false;
+
+  try {
+    if (typeof pool.connect === 'function') {
+      client = await pool.connect();
+      usingPg = true;
+    }
+  } catch (connErr) {
+    console.warn('PG pool.connect failed, will attempt Supabase fallback for sale creation:', connErr && (connErr.message || connErr));
+    usingPg = false;
+  }
 
   try {
     const { customer_id = '', emp_id, discount_applied = 0, tax_rate = 0 } = req.body;
@@ -581,62 +589,106 @@ router.post('/', async (req, res) => {
       (baseForTax > 0 ? (baseForTax * taxRate) / 100 : 0).toFixed(2)
     );
 
-    await client.query('BEGIN');
-    started = true;
+    if (usingPg) {
+      await client.query('BEGIN');
+      started = true;
 
-    for (const item of items) {
-      const { rows } = await client.query(
-        'SELECT stock, product_name FROM products WHERE product_code = $1 FOR UPDATE',
-        [item.product_code]
+      for (const item of items) {
+        const { rows } = await client.query(
+          'SELECT stock, product_name FROM products WHERE product_code = $1 FOR UPDATE',
+          [item.product_code]
+        );
+        if (!rows.length) {
+          throw new Error(`Product ${item.product_code} not found`);
+        }
+        const product = rows[0];
+        if (Number(product.stock) < item.quantity) {
+          throw new Error(`${product.product_name} has only ${product.stock} in stock`);
+        }
+      }
+
+      const invoiceResult = await client.query(
+        `INSERT INTO sales_invoices (customer_id, emp_id, sub_total, discount_applied, tax_amount)
+         VALUES ($1, $2, $3, $4, $5)
+         RETURNING invoice_num`,
+        [
+          customer_id ? Number(customer_id) : null,
+          Number(emp_id),
+          subTotal,
+          discount,
+          taxAmount
+        ]
       );
-      if (!rows.length) {
-        throw new Error(`Product ${item.product_code} not found`);
+      const invoiceNum = invoiceResult.rows[0].invoice_num;
+
+      const detailInsert = `
+        INSERT INTO sales_details (invoice_num, product_code, quantity, selling_price)
+        VALUES ($1, $2, $3, $4)
+      `;
+      for (const item of items) {
+        await client.query(detailInsert, [
+          invoiceNum,
+          item.product_code,
+          item.quantity,
+          item.price
+        ]);
       }
-      const product = rows[0];
-      if (Number(product.stock) < item.quantity) {
-        throw new Error(`${product.product_name} has only ${product.stock} in stock`);
-      }
+
+      await client.query('COMMIT');
+      return res.redirect(`/sales/${invoiceNum}`);
     }
 
-    const invoiceResult = await client.query(
-      `INSERT INTO sales_invoices (customer_id, emp_id, sub_total, discount_applied, tax_amount)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING invoice_num`,
-      [
-        customer_id ? Number(customer_id) : null,
-        Number(emp_id),
-        subTotal,
-        discount,
-        taxAmount
-      ]
-    );
-    const invoiceNum = invoiceResult.rows[0].invoice_num;
+    // If PG isn't available, use Supabase client as fallback (not fully transactional).
+    if (!supabaseAvailable) {
+      return res.status(503).send('Sales creation requires Postgres or Supabase client.');
+    }
 
-    const detailInsert = `
-      INSERT INTO sales_details (invoice_num, product_code, quantity, selling_price)
-      VALUES ($1, $2, $3, $4)
-    `;
+    // Validate stock via Supabase
     for (const item of items) {
-      await client.query(detailInsert, [
-        invoiceNum,
-        item.product_code,
-        item.quantity,
-        item.price
-      ]);
+      const { data: prod, error: pErr } = await supabase.from('products').select('stock, product_name').eq('product_code', item.product_code).maybeSingle();
+      if (pErr) throw pErr;
+      if (!prod) throw new Error(`Product ${item.product_code} not found`);
+      if (Number(prod.stock) < item.quantity) throw new Error(`${prod.product_name} has only ${prod.stock} in stock`);
     }
 
-    await client.query('COMMIT');
-    res.redirect(`/sales/${invoiceNum}`);
+    // Insert invoice via Supabase and return inserted invoice (invoice_num)
+    const { data: insertedInvoice, error: invErr } = await supabase
+      .from('sales_invoices')
+      .insert([
+        {
+          customer_id: customer_id ? Number(customer_id) : null,
+          emp_id: Number(emp_id),
+          sub_total: subTotal,
+          discount_applied: discount,
+          tax_amount: taxAmount
+        }
+      ])
+      .select('invoice_num')
+      .maybeSingle();
+
+    if (invErr) throw invErr;
+    const invoiceNum = insertedInvoice?.invoice_num;
+    if (!invoiceNum) throw new Error('Failed to create invoice via Supabase');
+
+    // Insert details
+    for (const item of items) {
+      const { error: dErr } = await supabase.from('sales_details').insert([
+        { invoice_num: invoiceNum, product_code: item.product_code, quantity: item.quantity, selling_price: item.price }
+      ]);
+      if (dErr) throw dErr;
+    }
+
+    return res.redirect(`/sales/${invoiceNum}`);
   } catch (err) {
     if (started) {
-      await client.query('ROLLBACK');
+      try { await client.query('ROLLBACK'); } catch(_){}
     }
     console.error('Error creating sale:', err && (err.stack || err.message || err));
     res
       .status(err.message && err.message.includes('stock') ? 400 : 500)
       .send(err.message || 'Error creating sale');
   } finally {
-    client.release();
+    if (client && typeof client.release === 'function') try { client.release(); } catch(_){}
   }
 });
 

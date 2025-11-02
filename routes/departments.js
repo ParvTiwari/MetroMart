@@ -4,74 +4,73 @@ const router = express.Router();
 
 // ✅ GET All Departments (with optional search/sort)
 router.get("/", async (req, res) => {
+  console.log('HTTP GET /departments');
+  // Prefer Supabase client for reads (stable when using Supabase project). If it fails, fall back to pg SQL.
+  const { search, sort } = req.query;
   try {
-    const { search, sort } = req.query;
+    // Build Supabase query
+    let depQuery = supabase.from('department').select('dep_id,dep_name,supervisor_id');
+    if (search && search.trim() !== '') depQuery = depQuery.ilike('dep_name', `%${search}%`);
+    // ordering
+    if (sort === 'name_asc') depQuery = depQuery.order('dep_name', { ascending: true });
+    else if (sort === 'name_desc') depQuery = depQuery.order('dep_name', { ascending: false });
+    else depQuery = depQuery.order('dep_id', { ascending: true });
 
-    let query = `
+    const [{ data: departmentsData, error: depErr }, { data: employeesData, error: empErr }] = await Promise.all([
+      depQuery,
+      supabase.from('employees').select('emp_id,emp_name').order('emp_name', { ascending: true })
+    ]);
+
+    if (depErr || empErr) throw depErr || empErr;
+
+    // Enrich departments with supervisor_name and apply 'sup' sort if requested
+    let filtered = departmentsData;
+    if (sort === 'sup') filtered = filtered.sort((a,b) => {
+      const aSup = employeesData.find(e => e.emp_id === a.supervisor_id)?.emp_name || '';
+      const bSup = employeesData.find(e => e.emp_id === b.supervisor_id)?.emp_name || '';
+      return aSup.localeCompare(bSup);
+    });
+
+    const enriched = filtered.map(d => {
+      const sup = employeesData.find(e => e.emp_id === d.supervisor_id);
+      return { ...d, supervisor_name: sup ? sup.emp_name : null };
+    });
+
+    return res.render('departments', { departments: enriched, employees: employeesData, search, sort });
+  } catch (supErr) {
+    console.warn('Supabase read failed for departments, falling back to PG SQL:', supErr.message || supErr);
+    // fallback to PG like before
+    try {
+      let query = `
       SELECT d.dep_id, d.dep_name, e.emp_name AS supervisor_name
       FROM department d
       LEFT JOIN employees e ON d.supervisor_id = e.emp_id
       WHERE 1=1
     `;
-
-    const params = [];
-
-    if (search && search.trim() !== "") {
-      query += ` AND d.dep_name ILIKE $${params.length + 1}`;
-      params.push(`%${search}%`);
-    }
-
-    // ✅ Sorting options
-    if (sort === "name_asc") query += " ORDER BY d.dep_name ASC";
-    else if (sort === "name_desc") query += " ORDER BY d.dep_name DESC";
-    else if (sort === "sup") query += " ORDER BY e.emp_name ASC";
-    else query += " ORDER BY d.dep_id ASC";
-
-    // ✅ Get departments + employees (for form)
-    const [departmentsResult, employeesResult] = await Promise.all([
-      pool.query(query, params),
-      pool.query("SELECT emp_id, emp_name FROM employees ORDER BY emp_name ASC;")
-    ]);
-
-    res.render("departments", {
-      departments: departmentsResult.rows,
-      employees: employeesResult.rows,
-      search,
-      sort
-    });
-  } catch (err) {
-    console.warn('PG query failed for departments, falling back to Supabase client:', err.message || err);
-    try {
-      const { data: departmentsData, error: depErr } = await supabase.from('department').select('dep_id, dep_name, supervisor_id').order('dep_name', { ascending: true });
-      const { data: employeesData, error: empErr } = await supabase.from('employees').select('emp_id, emp_name').order('emp_name', { ascending: true });
-      if (depErr || empErr) throw depErr || empErr;
-
-      // Simple server-side search/filter/sort emulation to match SQL behaviour
-      let filtered = departmentsData;
-      if (search && search.trim() !== '') {
-        const s = search.toLowerCase();
-        filtered = filtered.filter(d => (d.dep_name || '').toLowerCase().includes(s));
+      const params = [];
+      if (search && search.trim() !== "") {
+        query += ` AND d.dep_name ILIKE $${params.length + 1}`;
+        params.push(`%${search}%`);
       }
+      if (sort === "name_asc") query += " ORDER BY d.dep_name ASC";
+      else if (sort === "name_desc") query += " ORDER BY d.dep_name DESC";
+      else if (sort === "sup") query += " ORDER BY e.emp_name ASC";
+      else query += " ORDER BY d.dep_id ASC";
 
-      if (sort === 'name_asc') filtered.sort((a,b) => (a.dep_name||'').localeCompare(b.dep_name||''));
-      else if (sort === 'name_desc') filtered.sort((a,b) => (b.dep_name||'').localeCompare(a.dep_name||''));
-      else if (sort === 'sup') filtered.sort((a,b) => {
-        const aSup = employeesData.find(e => e.emp_id === a.supervisor_id)?.emp_name || '';
-        const bSup = employeesData.find(e => e.emp_id === b.supervisor_id)?.emp_name || '';
-        return aSup.localeCompare(bSup);
+      const [departmentsResult, employeesResult] = await Promise.all([
+        pool.query(query, params),
+        pool.query("SELECT emp_id, emp_name FROM employees ORDER BY emp_name ASC;")
+      ]);
+
+      return res.render("departments", {
+        departments: departmentsResult.rows,
+        employees: employeesResult.rows,
+        search,
+        sort
       });
-      else filtered.sort((a,b) => Number(a.dep_id) - Number(b.dep_id));
-
-      // Enrich with supervisor_name for the template (SQL version returns this column)
-      const enriched = filtered.map(d => {
-        const sup = employeesData.find(e => e.emp_id === d.supervisor_id);
-        return { ...d, supervisor_name: sup ? sup.emp_name : null };
-      });
-
-      res.render('departments', { departments: enriched, employees: employeesData, search, sort });
-    } catch (supErr) {
-      console.error('Supabase fallback failed for departments route:', supErr);
-      res.status(500).send('Error fetching departments');
+    } catch (err) {
+      console.error('Fallback PG query failed for departments route:', err);
+      return res.status(500).send('Error fetching departments');
     }
   }
 });

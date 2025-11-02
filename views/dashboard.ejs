@@ -45,167 +45,156 @@
             </div>
         </div>
 
-        <!-- Key Metrics -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-3">
-                <div class="card metric-card h-100 border-primary">
-                    <div class="card-body text-center">
-                        <div class="text-primary mb-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+        <!-- Key Metrics - Compact Layout -->
+        <div class="row g-3 mb-3">
+            <div class="col-6 col-md-3">
+                <div class="card border-primary">
+                    <div class="card-body p-3 text-center">
+                        <div class="text-primary mb-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H8.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718H4zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73l.348.086z"/>
                             </svg>
                         </div>
-                        <h3 class="h4 mb-1"><%= formattedRevenue %></h3>
-                        <p class="text-muted small mb-0">30-Day Revenue</p>
+                        <h5 class="h6 mb-0"><%= formattedRevenue %></h5>
+                        <small class="text-muted">Revenue</small>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card metric-card h-100 border-success">
-                    <div class="card-body text-center">
-                        <div class="text-success mb-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+            <div class="col-6 col-md-3">
+                <div class="card border-success">
+                    <div class="card-body p-3 text-center">
+                        <div class="text-success mb-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
                                 <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319z"/>
                             </svg>
                         </div>
-                        <h3 class="h4 mb-1"><%= totalInvoices %></h3>
-                        <p class="text-muted small mb-0">Total Invoices (30 days)</p>
+                        <h5 class="h6 mb-0"><%= totalInvoices %></h5>
+                        <small class="text-muted">Invoices</small>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card metric-card h-100 border-info">
-                    <div class="card-body text-center">
-                        <div class="text-info mb-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+            <div class="col-6 col-md-3">
+                <div class="card border-info">
+                    <div class="card-body p-3 text-center">
+                        <div class="text-info mb-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
                             </svg>
                         </div>
-                        <h3 class="h4 mb-1"><%= totalCustomers %></h3>
-                        <p class="text-muted small mb-0">Total Customers</p>
+                        <h5 class="h6 mb-0"><%= totalCustomers %></h5>
+                        <small class="text-muted">Customers</small>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card metric-card h-100 border-warning">
-                    <div class="card-body text-center">
-                        <div class="text-warning mb-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+            <div class="col-6 col-md-3">
+                <div class="card border-warning">
+                    <div class="card-body p-3 text-center">
+                        <div class="text-warning mb-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 6h1.717L5.07 1.243a.5.5 0 0 1 .686-.172zM3.394 7l1.176 4h6.862L12.608 7H3.394z"/>
                             </svg>
                         </div>
-                        <h3 class="h4 mb-1"><%= totalProducts %></h3>
-                        <p class="text-muted small mb-0">Total Products (<%= activeProducts %> active)</p>
+                        <h5 class="h6 mb-0"><%= totalProducts %></h5>
+                        <small class="text-muted">Products</small>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Charts and Details -->
-        <div class="row g-4">
+        <!-- Combined Analytics Section -->
+        <div class="row g-3">
             <!-- Sales Trend Chart -->
             <div class="col-lg-8">
                 <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">7-Day Sales Trend</h5>
+                    <div class="card-header py-2">
+                        <h6 class="mb-0">7-Day Sales Trend</h6>
                     </div>
-                    <div class="card-body">
-                        <canvas id="salesTrendChart" height="300"></canvas>
+                    <div class="card-body p-3">
+                        <canvas id="salesTrendChart" height="250"></canvas>
                     </div>
                 </div>
             </div>
 
-            <!-- Quick Stats -->
+            <!-- Quick Stats & Recent Activity -->
             <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Quick Stats</h5>
+                <div class="card mb-3">
+                    <div class="card-header py-2">
+                        <h6 class="mb-0">Quick Stats</h6>
                     </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between">
-                                <span class="text-muted">Avg Ticket Size</span>
-                                <span class="fw-bold"><%= formattedAvgTicket %></span>
+                    <div class="card-body p-3">
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Avg Ticket</small>
+                                <span class="fw-bold small"><%= formattedAvgTicket %></span>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between">
-                                <span class="text-muted">Customers Served (30d)</span>
-                                <span class="fw-bold"><%= totalCustomersServed %></span>
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Customers (30d)</small>
+                                <span class="fw-bold small"><%= totalCustomersServed %></span>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between">
-                                <span class="text-muted">Active Suppliers</span>
-                                <span class="fw-bold"><%= totalSuppliers %></span>
+                        <div class="mb-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Suppliers</small>
+                                <span class="fw-bold small"><%= totalSuppliers %></span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Recent Sales and Top Products -->
-        <div class="row g-4 mt-2">
-            <!-- Recent Sales -->
-            <div class="col-lg-6">
+                <!-- Recent Sales -->
                 <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Recent Sales</h5>
+                    <div class="card-header py-2">
+                        <h6 class="mb-0">Recent Sales</h6>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-3">
                         <% if (recentSales && recentSales.length > 0) { %>
-                            <div class="table-responsive">
-                                <table class="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Invoice</th>
-                                            <th>Customer</th>
-                                            <th>Amount</th>
-                                            <th>Items</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% recentSales.slice(0, 5).forEach(sale => { %>
-                                            <tr>
-                                                <td><small>#<%= sale.invoice_num %></small></td>
-                                                <td><small><%= sale.customer_name %></small></td>
-                                                <td><small class="fw-bold">₹<%= sale.final_amount.toLocaleString('en-IN') %></small></td>
-                                                <td><small><%= sale.items_count %></small></td>
-                                            </tr>
-                                        <% }); %>
-                                    </tbody>
-                                </table>
-                            </div>
-                        <% } else { %>
-                            <p class="text-muted mb-0">No recent sales data available</p>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Top Products -->
-            <div class="col-lg-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Top Products by Revenue</h5>
-                    </div>
-                    <div class="card-body">
-                        <% if (topProducts && topProducts.length > 0) { %>
-                            <% topProducts.forEach(product => { %>
+                            <% recentSales.slice(0, 3).forEach(sale => { %>
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <div>
-                                        <div class="fw-medium"><%= product.product_name %></div>
-                                        <small class="text-muted"><%= product.units_sold %> units sold</small>
+                                        <small class="fw-medium">#<%= sale.invoice_num %></small>
+                                        <br><small class="text-muted"><%= sale.customer_name %></small>
                                     </div>
                                     <div class="text-end">
-                                        <div class="fw-bold">₹<%= product.revenue.toLocaleString('en-IN') %></div>
+                                        <small class="fw-bold">₹<%= sale.final_amount.toLocaleString('en-IN') %></small>
+                                        <br><small class="text-muted"><%= sale.items_count %> items</small>
                                     </div>
                                 </div>
                             <% }); %>
                         <% } else { %>
-                            <p class="text-muted mb-0">No product data available</p>
+                            <small class="text-muted">No recent sales</small>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Products -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header py-2">
+                        <h6 class="mb-0">Top Products by Revenue</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <% if (topProducts && topProducts.length > 0) { %>
+                            <div class="row g-2">
+                                <% topProducts.slice(0, 4).forEach(product => { %>
+                                    <div class="col-md-3">
+                                        <div class="border rounded p-2 h-100">
+                                            <div class="fw-medium small mb-1"><%= product.product_name %></div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted"><%= product.units_sold %> sold</small>
+                                                <small class="fw-bold">₹<%= product.revenue.toLocaleString('en-IN') %></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } else { %>
+                            <small class="text-muted">No product data available</small>
                         <% } %>
                     </div>
                 </div>
@@ -215,15 +204,14 @@
 
     <%- include('partials/footer') %>
 
-    <script>
-        // Inject data from server
-        window.dashboardData = <%- JSON.stringify({ salesTrend: salesTrend || [] }) %>;
-    </script>
+    <div id="chart-data" data-trend='<%- JSON.stringify(salesTrend || []).replace(/'/g, "\\'") %>' style="display: none;"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Sales Trend Chart
-        const salesTrendData = window.dashboardData.salesTrend;
-        if (salesTrendData.length > 0) {
+        const chartDataElement = document.getElementById('chart-data');
+        const salesTrendData = JSON.parse(chartDataElement.dataset.trend || '[]');
+
+        if (salesTrendData && salesTrendData.length > 0) {
             const ctx = document.getElementById('salesTrendChart').getContext('2d');
             new Chart(ctx, {
                 type: 'line',
