@@ -231,7 +231,7 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 // Update supplier
-router.post('/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
   const supplierId = Number(req.params.id);
   const { supplier_name, contact_person, mobile, email, address, is_active } = req.body;
 
