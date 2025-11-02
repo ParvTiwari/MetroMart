@@ -64,10 +64,24 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    await pool.query(
-      'INSERT INTO suppliers (supplier_name, contact_person, mobile, email, address) VALUES ($1, $2, $3, $4, $5)',
-      [supplier_name, contact_person, mobile, email, address]
-    );
+    // Try Postgres first
+    try {
+      await pool.query(
+        'INSERT INTO suppliers (supplier_name, contact_person, mobile, email, address) VALUES ($1, $2, $3, $4, $5)',
+        [supplier_name, contact_person, mobile, email, address]
+      );
+    } catch (pgErr) {
+      console.error('Error creating supplier via Postgres:', pgErr);
+      // Fallback to Supabase
+      if (supabaseAvailable) {
+        const { error } = await supabase
+          .from('suppliers')
+          .insert([{ supplier_name, contact_person, mobile, email, address }]);
+        if (error) throw error;
+      } else {
+        throw pgErr;
+      }
+    }
     res.redirect('/suppliers');
   } catch (err) {
     console.error('Error creating supplier:', err);
@@ -240,10 +254,25 @@ router.put('/:id', async (req, res) => {
   }
 
   try {
-    await pool.query(
-      'UPDATE suppliers SET supplier_name = $1, contact_person = $2, mobile = $3, email = $4, address = $5, is_active = $6 WHERE supplier_id = $7',
-      [supplier_name, contact_person, mobile, email, address, is_active === 'on', supplierId]
-    );
+    // Try Postgres first
+    try {
+      await pool.query(
+        'UPDATE suppliers SET supplier_name = $1, contact_person = $2, mobile = $3, email = $4, address = $5, is_active = $6 WHERE supplier_id = $7',
+        [supplier_name, contact_person, mobile, email, address, is_active === 'on', supplierId]
+      );
+    } catch (pgErr) {
+      console.error('Error updating supplier via Postgres:', pgErr);
+      // Fallback to Supabase
+      if (supabaseAvailable) {
+        const { error } = await supabase
+          .from('suppliers')
+          .update({ supplier_name, contact_person, mobile, email, address, is_active: is_active === 'on' })
+          .eq('supplier_id', supplierId);
+        if (error) throw error;
+      } else {
+        throw pgErr;
+      }
+    }
     res.redirect(`/suppliers/${supplierId}`);
   } catch (err) {
     console.error('Error updating supplier:', err);
@@ -256,7 +285,22 @@ router.post('/:id/delete', async (req, res) => {
   const supplierId = Number(req.params.id);
 
   try {
-    await pool.query('UPDATE suppliers SET is_active = false WHERE supplier_id = $1', [supplierId]);
+    // Try Postgres first
+    try {
+      await pool.query('UPDATE suppliers SET is_active = false WHERE supplier_id = $1', [supplierId]);
+    } catch (pgErr) {
+      console.error('Error deleting supplier via Postgres:', pgErr);
+      // Fallback to Supabase
+      if (supabaseAvailable) {
+        const { error } = await supabase
+          .from('suppliers')
+          .update({ is_active: false })
+          .eq('supplier_id', supplierId);
+        if (error) throw error;
+      } else {
+        throw pgErr;
+      }
+    }
     res.redirect('/suppliers');
   } catch (err) {
     console.error('Error deleting supplier:', err);
