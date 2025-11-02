@@ -3,9 +3,12 @@ import { supabase } from "../db/pool.js";
 
 const router = express.Router();
 
+// GET All Products (with search + sort)
 router.get("/", async (req, res) => {
   try {
-    const { data: products, error } = await supabase
+    const { search = "", sort = "" } = req.query;
+
+    let query = supabase
       .from("products")
       .select(`
         product_code,
@@ -16,9 +19,32 @@ router.get("/", async (req, res) => {
         is_active,
         last_updated,
         department:dep_num (dep_name)
-      `)
-      .order("product_code", { ascending: true });
+      `);
 
+    // Search filter
+    if (search) {
+      query = query.ilike("product_name", `%${search}%`);
+    }
+
+    // Sorting logic
+    switch (sort) {
+      case "name_asc":
+        query = query.order("product_name", { ascending: true });
+        break;
+      case "name_desc":
+        query = query.order("product_name", { ascending: false });
+        break;
+      case "price_asc":
+        query = query.order("price", { ascending: true });
+        break;
+      case "price_desc":
+        query = query.order("price", { ascending: false });
+        break;
+      default:
+        query = query.order("product_code", { ascending: true });
+    }
+
+    const { data: products, error } = await query;
     if (error) throw error;
 
     const { data: departments, error: deptError } = await supabase
@@ -29,13 +55,13 @@ router.get("/", async (req, res) => {
     if (deptError) throw deptError;
 
     res.render("products", {
-      products: products.map(p => ({
+      products: products.map((p) => ({
         ...p,
-        department_name: p.department?.dep_name || "Unknown"
+        department_name: p.department?.dep_name || "Unknown",
       })),
       departments,
-      search: "",
-      sort: ""
+      search,
+      sort,
     });
   } catch (err) {
     console.error("Error fetching products:", err);
@@ -43,17 +69,25 @@ router.get("/", async (req, res) => {
   }
 });
 
-
-// ✅ POST Add Product
+//  POST Add Product
 router.post("/add", async (req, res) => {
   const { product_code, product_name, price, stock, reorder_level, dep_num } = req.body;
 
   try {
-    await pool.query(
-      `INSERT INTO products (product_code, product_name, price, stock, reorder_level, dep_num)
-       VALUES ($1, $2, $3, $4, $5, $6);`,
-      [product_code, product_name, price, stock, reorder_level, dep_num]
-    );
+    const { error } = await supabase.from("products").insert([
+      {
+        product_code,
+        product_name,
+        price: parseFloat(price),
+        stock: parseInt(stock),
+        reorder_level: parseInt(reorder_level),
+        dep_num: parseInt(dep_num),
+        is_active: true,
+        last_updated: new Date(),
+      },
+    ]);
+
+    if (error) throw error;
     res.redirect("/products");
   } catch (err) {
     console.error("Error adding product:", err);
@@ -61,18 +95,29 @@ router.post("/add", async (req, res) => {
   }
 });
 
-// ✅ GET Edit Product Page
+//GET Edit Product Page
 router.get("/edit/:product_code", async (req, res) => {
   try {
     const code = req.params.product_code;
-    const [productResult, deptResult] = await Promise.all([
-      pool.query("SELECT * FROM products WHERE product_code = $1;", [code]),
-      pool.query("SELECT dep_id, dep_name FROM department ORDER BY dep_name ASC;")
-    ]);
+
+    const { data: productData, error: productError } = await supabase
+      .from("products")
+      .select("*")
+      .eq("product_code", code)
+      .single();
+
+    if (productError) throw productError;
+
+    const { data: departments, error: deptError } = await supabase
+      .from("department")
+      .select("dep_id, dep_name")
+      .order("dep_name", { ascending: true });
+
+    if (deptError) throw deptError;
 
     res.render("products/edit", {
-      product: productResult.rows[0],
-      departments: deptResult.rows
+      product: productData,
+      departments,
     });
   } catch (err) {
     console.error("Error loading edit page:", err);
@@ -80,19 +125,23 @@ router.get("/edit/:product_code", async (req, res) => {
   }
 });
 
-// ✅ POST Update Product
+// Update Product (Price, Stock, Reorder)
 router.post("/edit/:product_code", async (req, res) => {
   const code = req.params.product_code;
-  const { product_name, price, stock, reorder_level, dep_num, is_active } = req.body;
+  const { price, stock, reorder_level } = req.body;
 
   try {
-    await pool.query(
-      `UPDATE products
-       SET product_name = $1, price = $2, stock = $3, reorder_level = $4,
-           dep_num = $5, is_active = $6, last_updated = NOW()
-       WHERE product_code = $7;`,
-      [product_name, price, stock, reorder_level, dep_num, is_active === "true", code]
-    );
+    const { error } = await supabase
+      .from("products")
+      .update({
+        price: parseFloat(price),
+        stock: parseInt(stock),
+        reorder_level: parseInt(reorder_level),
+        last_updated: new Date(),
+      })
+      .eq("product_code", code);
+
+    if (error) throw error;
     res.redirect("/products");
   } catch (err) {
     console.error("Error updating product:", err);
@@ -100,11 +149,12 @@ router.post("/edit/:product_code", async (req, res) => {
   }
 });
 
-// ✅ DELETE Product
+//  DELETE Product
 router.get("/delete/:product_code", async (req, res) => {
   try {
     const code = req.params.product_code;
-    await pool.query("DELETE FROM products WHERE product_code = $1;", [code]);
+    const { error } = await supabase.from("products").delete().eq("product_code", code);
+    if (error) throw error;
     res.redirect("/products");
   } catch (err) {
     console.error("Error deleting product:", err);
