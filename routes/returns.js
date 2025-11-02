@@ -1,5 +1,5 @@
 import express from 'express';
-import supabase from '../db/pool.js';
+import { supabase } from '../db/pool.js';
 const router = express.Router();
 
 // GET /returns - List all returns

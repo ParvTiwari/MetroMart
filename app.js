@@ -10,7 +10,7 @@ import flash from "connect-flash";
 dotenv.config(); // ✅ Load .env first
 
 // 🧩 Import routes & DB pool
-import pool from "./db/pool.js";
+import { supabase } from "./db/pool.js";
 import employeeRoutes from "./routes/employees.js";
 import productRoutes from "./routes/products.js";
 import supplierRoutes from "./routes/suppliers.js";
@@ -53,14 +53,15 @@ app.use((req, res, next) => {
 // 🏠 Root route
 app.get("/", (req, res) => res.render("index"));
 
-// 🧾 Test DB connection once on startup
+// 🧾 Test Supabase connection once on startup
 (async () => {
   try {
-    const result = await pool.query("SELECT NOW()");
-    console.log("✅ Connected to PostgreSQL!");
-    console.log("🕒 Server time:", result.rows[0].now);
+    // perform a lightweight read on a known table used by the app to verify connectivity
+    const { data, error } = await supabase.from('customers').select('customer_id').limit(1);
+    if (error) throw error;
+    console.log('✅ Connected to Supabase!');
   } catch (err) {
-    console.error("❌ Database connection error:", err.message);
+    console.error('❌ Database connection error:', err.message || err);
   }
 })();
 
