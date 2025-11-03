@@ -59,12 +59,12 @@
         <div class="card">
           <div class="icon">💰</div>
           <h3>Gross Sales</h3>
-          <p><strong>$<%= summary.totalGross.toFixed(2) %></strong></p>
+          <p><strong>&#8377;<%= summary.totalGross.toFixed(2) %></strong></p>
         </div>
         <div class="card">
           <div class="icon">🎯</div>
           <h3>Avg Ticket</h3>
-          <p><strong>$<%= summary.avgTicket.toFixed(2) %></strong></p>
+          <p><strong>&#8377;<%= summary.avgTicket.toFixed(2) %></strong></p>
         </div>
       </div>
     </section>
@@ -100,10 +100,10 @@
                   <td><%= inv.customer_name %></td>
                   <td><%= inv.emp_name %></td>
                   <td><%= inv.total_items %></td>
-                  <td>$<%= inv.sub_total.toFixed(2) %></td>
-                  <td>$<%= inv.discount_applied.toFixed(2) %></td>
-                  <td>$<%= inv.tax_amount.toFixed(2) %></td>
-                  <td><strong>$<%= inv.final_amount.toFixed(2) %></strong></td>
+                  <td>&#8377;<%= inv.sub_total.toFixed(2) %></td>
+                  <td>&#8377;<%= inv.discount_applied.toFixed(2) %></td>
+                  <td>&#8377;<%= inv.tax_amount.toFixed(2) %></td>
+                  <td><strong>&#8377;<%= inv.final_amount.toFixed(2) %></strong></td>
                   <td><a class="btn-secondary" href="/sales/<%= inv.invoice_num %>">View</a></td>
                 </tr>
               <% }) %>
@@ -134,7 +134,7 @@
                 <tr>
                   <td><%= item.product_name %></td>
                   <td><%= item.units_sold %></td>
-                  <td>$<%= item.revenue.toFixed(2) %></td>
+                  <td>&#8377;<%= item.revenue.toFixed(2) %></td>
                 </tr>
               <% }) %>
             <% } %>
