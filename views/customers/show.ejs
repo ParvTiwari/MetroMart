@@ -1,47 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Details - MetroMart</title>
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= customer.customer_name %> - Customer Details | MetroMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    body {
+      background-color: #f3f4f6;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 60px auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 30px 40px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 25px;
+      font-size: 26px;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 10px;
+    }
+
+    .customer-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 12px 16px;
+      transition: 0.2s;
+    }
+
+    .detail-row:hover {
+      background: #eef4ff;
+      transform: scale(1.01);
+    }
+
+    .detail-row strong {
+      color: #007bff;
+      min-width: 150px;
+    }
+
+    .detail-row span {
+      color: #333;
+      font-weight: 500;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .btn-warning {
+      background-color: #ffc107;
+      color: #333;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+      .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <%- include('../partials/header') %>
+  <%- include('../partials/header') %>
 
-    <div class="container">
-        <h1>Customer Details</h1>
+  <div class="container">
+    <h1>🧾 Customer Details</h1>
 
-        <div class="customer-details">
-            <div class="detail-row">
-                <strong>ID:</strong> <%= customer.customer_id %>
-            </div>
-            <div class="detail-row">
-                <strong>Name:</strong> <%= customer.customer_name %>
-            </div>
-            <div class="detail-row">
-                <strong>Mobile:</strong> <%= customer.mobile %>
-            </div>
-            <div class="detail-row">
-                <strong>Email:</strong> <%= customer.email %>
-            </div>
-            <div class="detail-row">
-                <strong>Address:</strong> <%= customer.address %>
-            </div>
-            <div class="detail-row">
-                <strong>Loyalty Points:</strong> <%= customer.loyalty_points %>
-            </div>
-            <div class="detail-row">
-                <strong>Registration Date:</strong> <%= new Date(customer.registration_date).toLocaleDateString() %>
-            </div>
-        </div>
-
-        <div class="form-actions">
-            <a href="/customers/<%= customer.customer_id %>/edit" class="btn btn-warning">Edit</a>
-            <a href="/customers" class="btn btn-secondary">Back to List</a>
-        </div>
+    <div class="customer-card">
+      <div class="detail-row">
+        <strong>ID:</strong> <span><%= customer.customer_id %></span>
+      </div>
+      <div class="detail-row">
+        <strong>Name:</strong> <span><%= customer.customer_name %></span>
+      </div>
+      <div class="detail-row">
+        <strong>Mobile:</strong> <span><%= customer.mobile %></span>
+      </div>
+      <div class="detail-row">
+        <strong>Email:</strong> <span><%= customer.email %></span>
+      </div>
+      <div class="detail-row">
+        <strong>Address:</strong> <span><%= customer.address %></span>
+      </div>
+      <div class="detail-row">
+        <strong>Loyalty Points:</strong> <span><%= customer.loyalty_points %></span>
+      </div>
+      <div class="detail-row">
+        <strong>Registration Date:</strong> 
+        <span><%= new Date(customer.registration_date).toLocaleDateString() %></span>
+      </div>
     </div>
 
-    <%- include('../partials/footer') %>
+    <div class="form-actions">
+      <a href="/customers/<%= customer.customer_id %>/edit" class="btn btn-warning">✏ Edit</a>
+      <a href="/customers" class="btn btn-secondary">⬅ Back</a>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
 </body>
 </html>

@@ -1,56 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customers - MetroMart</title>
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customers - MetroMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    body {
+      background-color: #f9fafb;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .btn {
+      padding: 8px 15px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: white;
+      transition: 0.3s;
+      font-size: 14px;
+    }
+
+    .btn-primary { background-color: #007bff; }
+    .btn-secondary { background-color: #17a2b8; }
+    .btn-warning { background-color: #ffc107; color: #333; }
+    .btn-danger { background-color: #dc3545; }
+
+    .btn:hover {
+      opacity: 0.85;
+      transform: scale(1.03);
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin-top: 25px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    thead {
+      background: #007bff;
+      color: white;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    tbody tr:hover {
+      background-color: #f1f5ff;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      thead {
+        display: none;
+      }
+      tr {
+        margin-bottom: 12px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        padding: 10px;
+      }
+      td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 10px;
+      }
+      td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #555;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <%- include('partials/header') %>
+  <%- include('partials/header') %>
 
-    <div class="container">
-        <h1>Customers</h1>
-        <a href="/customers/new" class="btn btn-primary">Add New Customer</a>
-
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Mobile</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th>Loyalty Points</th>
-                        <th>Registration Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% customers.forEach(customer => { %>
-                        <tr>
-                            <td><%= customer.customer_id %></td>
-                            <td><%= customer.customer_name %></td>
-                            <td><%= customer.mobile %></td>
-                            <td><%= customer.email %></td>
-                            <td><%= customer.address %></td>
-                            <td><%= customer.loyalty_points %></td>
-                            <td><%= new Date(customer.registration_date).toLocaleDateString() %></td>
-                            <td>
-                                <a href="/customers/<%= customer.customer_id %>" class="btn btn-secondary">View</a>
-                                <a href="/customers/<%= customer.customer_id %>/edit" class="btn btn-warning">Edit</a>
-                                <form action="/customers/<%= customer.customer_id %>?_method=DELETE" method="POST" style="display:inline;">
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                    <% }) %>
-                </tbody>
-            </table>
-        </div>
+  <div class="container">
+    <h1>👥 Customers</h1>
+    <div style="text-align: right; margin-bottom: 15px;">
+      <a href="/customers/new" class="btn btn-primary">➕ Add New Customer</a>
     </div>
 
-    <%- include('partials/footer') %>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Mobile</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Loyalty Points</th>
+            <th>Registration Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% customers.forEach(customer => { %>
+            <tr>
+              <td data-label="ID"><%= customer.customer_id %></td>
+              <td data-label="Name"><%= customer.customer_name %></td>
+              <td data-label="Mobile"><%= customer.mobile %></td>
+              <td data-label="Email"><%= customer.email %></td>
+              <td data-label="Address"><%= customer.address %></td>
+              <td data-label="Points"><%= customer.loyalty_points %></td>
+              <td data-label="Registered"><%= new Date(customer.registration_date).toLocaleDateString() %></td>
+              <td data-label="Actions">
+                <div class="actions">
+                  <a href="/customers/<%= customer.customer_id %>" class="btn btn-secondary">View</a>
+                  <a href="/customers/<%= customer.customer_id %>/edit" class="btn btn-warning">Edit</a>
+                  <form action="/customers/<%= customer.customer_id %>?_method=DELETE" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
 </body>
 </html>
