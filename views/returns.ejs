@@ -42,7 +42,7 @@
                 <td><%= ret.products?.product_name || 'Unknown Product' %></td>
                 <td><%= ret.quantity_returned %></td>
                 <td><%= ret.return_reason || '-' %></td>
-                <td>$<%= (ret.refund_amount || 0).toFixed(2) %></td>
+                <td>₹<%= (ret.refund_amount || 0).toFixed(2) %></td>
                 <td><%= new Date(ret.return_date).toLocaleDateString() %></td>
                 <td><%= ret.employees?.emp_name || 'Unknown' %></td>
                 <td>
