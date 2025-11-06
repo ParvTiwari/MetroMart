@@ -44,6 +44,42 @@
       </form>
     </section>
 
+    <!-- ✅ REPORT DOWNLOAD SECTION -->
+<section class="filter-sort-bar" style="margin-top: 1rem;">
+  <form method="GET" action="/sales/report">
+
+    <!-- Last N Transactions -->
+    <select name="last_n">
+      <option value="">Last N Transactions</option>
+      <option value="10">Last 10</option>
+      <option value="25">Last 25</option>
+      <option value="50">Last 50</option>
+      <option value="100">Last 100</option>
+    </select>
+
+    <!-- Month Dropdown -->
+    <select name="month">
+      <option value="">Select Month</option>
+      <% for (let m = 1; m <= 12; m++) { %>
+        <option value="<%= m %>"><%= m %></option>
+      <% } %>
+    </select>
+
+    <!-- Year Dropdown -->
+    <select name="year">
+      <option value="">Select Year</option>
+      <% const currentYear = new Date().getFullYear(); %>
+      <% for (let y = currentYear; y >= currentYear - 5; y--) { %>
+        <option value="<%= y %>"><%= y %></option>
+      <% } %>
+    </select>
+
+    <!-- Submit -->
+    <button class="btn-primary" type="submit">📥 Generate Report</button>
+  </form>
+</section>
+
+
     <section class="summary-cards">
       <div class="cards">
         <div class="card">

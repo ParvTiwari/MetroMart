@@ -692,6 +692,96 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.get("/report", async (req, res) => {
+  try {
+    const { last_n = "", month = "", year = "" } = req.query;
+
+    let query = supabase
+      .from("sales_invoices")
+      .select(`
+        invoice_num,
+        invoice_timestamp,
+        sub_total,
+        discount_applied,
+        tax_amount,
+        final_amount,
+        customers ( customer_name ),
+        employees ( emp_name )
+      `)
+      .order("invoice_timestamp", { ascending: false });
+
+    // MONTH WISE REPORT FILTER
+    if (month && year) {
+      const yy = year;
+      const mm = String(month).padStart(2, "0");
+
+      // last date auto calculate
+      const lastDay = new Date(yy, month, 0).getDate();
+
+      query = query
+        .gte("invoice_timestamp", `${yy}-${mm}-01`)
+        .lte("invoice_timestamp", `${yy}-${mm}-${lastDay}`);
+    }
+
+    // LAST N INVOICES FILTER
+    if (last_n) {
+      query = query.limit(parseInt(last_n));
+    }
+
+    const { data: invoices, error } = await query;
+    if (error) throw error;
+
+    // Convert Supabase structure
+    const formatted = invoices.map(r => ({
+      invoice_num: r.invoice_num,
+      invoice_timestamp: r.invoice_timestamp,
+      customer_name: r.customers?.customer_name || "Walk-in Customer",
+      emp_name: r.employees?.emp_name || "Unknown",
+      sub_total: r.sub_total,
+      discount_applied: r.discount_applied,
+      tax_amount: r.tax_amount,
+      final_amount: r.final_amount
+    }));
+
+    // If empty → return empty CSV
+    if (formatted.length === 0) {
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", "attachment; filename=sales_report.csv");
+      return res.send("No Data Found\n");
+    }
+
+    // Create CSV manually
+    const csvHeader =
+      "Invoice,Date,Customer,Sold By,Subtotal,Discount,Tax,Total\n";
+
+    const csvRows = formatted
+      .map(inv =>
+        [
+          inv.invoice_num,
+          new Date(inv.invoice_timestamp).toISOString(),
+          inv.customer_name,
+          inv.emp_name,
+          inv.sub_total,
+          inv.discount_applied,
+          inv.tax_amount,
+          inv.final_amount
+        ].join(",")
+      )
+      .join("\n");
+
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", "attachment; filename=sales_report.csv");
+
+    return res.send(csvHeader + csvRows);
+  } catch (err) {
+    console.error("REPORT ERROR:", err);
+    res.status(500).send("Could not generate report");
+  }
+});
+
+
+
+
 router.get('/:invoice_num', async (req, res) => {
   const invoiceId = Number(req.params.invoice_num);
   if (!invoiceId) {
@@ -718,5 +808,4 @@ router.get('/:invoice_num', async (req, res) => {
     res.status(500).send('Error fetching invoice');
   }
 });
-
 export default router;
