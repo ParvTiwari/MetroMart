@@ -196,3 +196,34 @@ create trigger trg_increase_stock_after_return
 after insert on returns
 for each row
 execute function increase_stock_after_return();
+
+create or replace function reduce_loyalty_points_on_return()
+returns trigger as $$
+declare
+    points_to_deduct int;
+begin
+    points_to_deduct := round(new.refund_amount * 0.05);
+    if new.invoice_num is not null then
+        declare
+            cust_id int;
+            current_points int;
+        begin
+            select customer_id into cust_id from sales_invoices where invoice_num = new.invoice_num;
+            if cust_id is not null then
+                select loyalty_points into current_points from customers where customer_id = cust_id;
+                if current_points is null then
+                    current_points := 0;
+                end if;
+                update customers
+                set loyalty_points = greatest(current_points - points_to_deduct, 0)
+                where customer_id = cust_id;
+            end if;
+        end;
+    end if;
+    return new;
+end;
+$$ language plpgsql;
+create trigger trg_reduce_loyalty_points_on_return
+after insert on returns
+for each row
+execute function reduce_loyalty_points_on_return();
