@@ -60,8 +60,8 @@
                 <td><%= item.product_name %></td>
                 <td><%= item.product_code %></td>
                 <td><%= item.quantity %></td>
-                <td>$<%= item.selling_price.toFixed(2) %></td>
-                <td>$<%= item.total.toFixed(2) %></td>
+                <td>₹<%= item.selling_price.toFixed(2) %></td>
+                <td>₹<%= item.total.toFixed(2) %></td>
               </tr>
             <% }) %>
           </tbody>
@@ -74,19 +74,19 @@
         <tbody>
           <tr>
             <th style="width:50%;">Subtotal</th>
-            <td>$<%= invoice.sub_total.toFixed(2) %></td>
+            <td>₹<%= invoice.sub_total.toFixed(2) %></td>
           </tr>
           <tr>
             <th>Discount</th>
-            <td>$<%= invoice.discount_applied.toFixed(2) %></td>
+            <td>₹<%= invoice.discount_applied.toFixed(2) %></td>
           </tr>
           <tr>
             <th>Tax</th>
-            <td>$<%= invoice.tax_amount.toFixed(2) %></td>
+            <td>₹<%= invoice.tax_amount.toFixed(2) %></td>
           </tr>
           <tr>
             <th>Grand Total</th>
-            <td><strong>$<%= invoice.final_amount.toFixed(2) %></strong></td>
+            <td><strong>₹<%= invoice.final_amount.toFixed(2) %></strong></td>
           </tr>
         </tbody>
       </table>

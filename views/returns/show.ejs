@@ -19,7 +19,7 @@
                 <p><strong>Return Date:</strong> <%= new Date(returnData.return_date).toLocaleDateString() %></p>
                 <p><strong>Return Reason:</strong> <%= returnData.return_reason %></p>
                 <p><strong>Quantity Returned:</strong> <%= returnData.quantity_returned %></p>
-                <p><strong>Refund Amount:</strong> $<%= returnData.refund_amount ? returnData.refund_amount.toFixed(2) : '0.00' %></p>
+                <p><strong>Refund Amount:</strong> ₹<%= returnData.refund_amount ? returnData.refund_amount.toFixed(2) : '0.00' %></p>
                 <p><strong>Processed By:</strong> <%= returnData.employees ? returnData.employees.emp_name : 'Unknown' %></p>
             </div>
 
@@ -35,7 +35,7 @@
                 <h2>Product Information</h2>
                 <p><strong>Product Code:</strong> <%= returnData.product_code %></p>
                 <p><strong>Product Name:</strong> <%= returnData.products ? returnData.products.product_name : 'Unknown Product' %></p>
-                <p><strong>Unit Price:</strong> $<%= returnData.products && returnData.products.price ? returnData.products.price.toFixed(2) : '0.00' %></p>
+                <p><strong>Unit Price:</strong> ₹<%= returnData.products && returnData.products.price ? returnData.products.price.toFixed(2) : '0.00' %></p>
             </div>
         </div>
 

@@ -7,9 +7,9 @@ import { fileURLToPath } from "url";
 import session from "express-session";
 import flash from "connect-flash";
 
-dotenv.config(); // ✅ Load .env first
+dotenv.config(); // Load .env first
 
-// 🧩 Import routes & DB pool
+//  Import routes & DB pool
 import { supabase } from "./db/pool.js";
 import employeeRoutes from "./routes/employees.js";
 import productRoutes from "./routes/products.js";
@@ -24,17 +24,17 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 🧱 View Engine & Static Setup
+//  View Engine & Static Setup
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
-// 🧠 Middleware
+//  Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
-// 🧩 Session & Flash Configuration (✨ REQUIRED for req.flash)
+// Session & Flash Configuration ( REQUIRED for req.flash)
 app.use(
   session({
     secret: "metromart_secret_key", // any secure string
@@ -51,22 +51,21 @@ app.use((req, res, next) => {
   next();
 });
 
-// 🏠 Root route
+// Root route
 app.get("/", (req, res) => res.render("index"));
 
-// 🧾 Test Supabase connection once on startup
 (async () => {
   try {
     // perform a lightweight read on a known table used by the app to verify connectivity
     const { data, error } = await supabase.from('customers').select('customer_id').limit(1);
     if (error) throw error;
-    console.log('✅ Connected to Supabase!');
+    console.log('Connected to Supabase!');
   } catch (err) {
-    console.error('❌ Database connection error:', err.message || err);
+    console.error('Database connection error:', err.message || err);
   }
 })();
 
-// 🛣️ Route mounting
+// Route mounting
 app.use("/dashboard", dashboardRoutes);
 app.use("/employees", employeeRoutes);
 app.use("/departments", departmentRoutes);
@@ -76,8 +75,8 @@ app.use("/customers", customerRoutes);
 app.use("/sales", salesRoutes);
 app.use("/returns", returnRoutes);
 
-// 🚀 Server Start
+// Server Start
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running at: http://localhost:${PORT}`);
+  console.log(`Server running at: http://localhost:${PORT}`);
 });

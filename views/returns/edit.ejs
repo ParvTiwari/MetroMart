@@ -276,7 +276,7 @@
                     <p><strong>Invoice:</strong> #<%= returnData.invoice_num %></p>
                     <p><strong>Product:</strong> <%= returnData.product_code %></p>
                     <p><strong>Quantity:</strong> <%= returnData.quantity_returned %></p>
-                    <p><strong>Refund Amount:</strong> $<%= returnData.refund_amount ? returnData.refund_amount.toFixed(2) : '0.00' %></p>
+                    <p><strong>Refund Amount:</strong> ₹<%= returnData.refund_amount ? returnData.refund_amount.toFixed(2) : '0.00' %></p>
                 </div>
             </div>
 
@@ -313,7 +313,7 @@
             <div class="form-section">
                 <h2><i class="fas fa-dollar-sign"></i> Refund Information</h2>
                 <div class="form-group">
-                    <label for="refund_amount"><i class="fas fa-money-bill-wave"></i> Refund Amount ($)</label>
+                    <label for="refund_amount"><i class="fas fa-money-bill-wave"></i> Refund Amount (₹)</label>
                     <input type="number" id="refund_amount" name="refund_amount" class="form-control"
                            value="<%= returnData.refund_amount %>" step="0.01" min="0" required>
                 </div>

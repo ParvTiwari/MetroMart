@@ -36,7 +36,7 @@
           </div>
 
           <div class="form-group">
-            <label for="discount_applied">Discount ($)</label>
+            <label for="discount_applied">Discount (₹)</label>
             <input type="number" step="0.01" min="0" name="discount_applied" id="discount_applied" value="0">
           </div>
 
@@ -71,19 +71,19 @@
           <div class="summary-grid" style="display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-top:1.5rem;">
             <div class="card">
               <h3>Subtotal</h3>
-              <p>$<span id="subtotal-view">0.00</span></p>
+              <p>₹<span id="subtotal-view">0.00</span></p>
             </div>
             <div class="card">
               <h3>Discount</h3>
-              <p>$<span id="discount-view">0.00</span></p>
+              <p>₹<span id="discount-view">0.00</span></p>
             </div>
             <div class="card">
               <h3>Tax</h3>
-              <p>$<span id="tax-view">0.00</span></p>
+              <p>₹<span id="tax-view">0.00</span></p>
             </div>
             <div class="card">
               <h3>Grand Total</h3>
-              <p><strong>$<span id="grand-total-view">0.00</span></strong></p>
+              <p><strong>₹<span id="grand-total-view">0.00</span></strong></p>
             </div>
           </div>
         </div>
@@ -132,7 +132,7 @@
         <td>
           <input type="number" name="selling_price[]" class="price-input" step="0.01" min="0.01" value="0.00" required>
         </td>
-        <td>$<span class="line-total">0.00</span></td>
+        <td>₹<span class="line-total">0.00</span></td>
         <td>
           <button type="button" class="btn-delete remove-row-btn">Remove</button>
         </td>

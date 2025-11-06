@@ -55,7 +55,7 @@
             </div>
 
             <div class="form-group">
-                <label for="refund_amount">Refund Amount ($):</label>
+                <label for="refund_amount">Refund Amount (₹):</label>
                 <input type="number" name="refund_amount" step="0.01" min="0" required>
             </div>
 
@@ -93,7 +93,7 @@
                         const productName = detail.products ? detail.products.product_name : 'Unknown Product';
                         const quantity = detail.quantity || 0;
                         const price = detail.selling_price || 0;
-                        option.textContent = `${productName} (Sold: ${quantity}, Price: $${price})`;
+                        option.textContent = `${productName} (Sold: ${quantity}, Price: ₹${price})`;
                         productSelect.appendChild(option);
                     });
                 } else {
