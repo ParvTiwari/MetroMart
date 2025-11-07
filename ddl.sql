@@ -131,7 +131,7 @@ VALUES
 (5, 'PF007', 1, 'Customer dissatisfaction', '2024-03-20', 450.00, 5),
 (7, 'DA009', 1, 'Packaging issue', '2024-03-22', 520.00, 7);
 
-insert into product_supplier (supplier_id, product_code, cost_price) VALUES
+INSERT INTO product_supplier (supplier_id, product_code, cost_price) VALUES
 (1, 'PC001', 180.00), (2, 'PC001', 185.00), (3, 'PC001', 182.50),
 (1, 'PC002', 150.00), (4, 'PC002', 155.00), (5, 'PC002', 153.00),
 (3, 'HC003', 70.00), (6, 'HC003', 72.50), (7, 'HC003', 75.00),
@@ -141,6 +141,4 @@ insert into product_supplier (supplier_id, product_code, cost_price) VALUES
 (9, 'PF007', 380.00), (3, 'PF007', 385.00), (8, 'PF007', 375.00),
 (10, 'BV008', 270.00), (2, 'BV008', 265.00), (1, 'BV008', 275.00),
 (7, 'DA009', 430.00), (4, 'DA009', 435.00), (6, 'DA009', 440.00),
-(8, 'RS010', 300.00), (9, 'RS010', 310.00), (5, 'RS010', 295.00),
-(2, 'PC001', 178.00), (4, 'HC003', 71.00), (3, 'RA006', 555.00),
-(1, 'PF007', 382.00), (10, 'RS010', 298.00), (6, 'BV008', 268.00);
+(8, 'RS010', 300.00), (9, 'RS010', 310.00), (5, 'RS010', 295.00);
