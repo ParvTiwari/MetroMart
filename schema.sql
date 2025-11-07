@@ -62,6 +62,16 @@ create table supply_order_details (
     foreign key (product_code) references products(product_code) on delete restrict
 );
 
+create table product_supplier(
+    supplier_id int,
+    product_code varchar(25),
+    cost_price DECIMAL(10,2) not null check (cost_price > 0),
+    
+    primary key (supplier_id, product_code)
+    foreign key (product_code) references products(product_code) on delete cascade,
+    foreign key (supplier_id) references suppliers(supplier_id) on delete cascade
+);
+
 create table customers (
     customer_id serial primary key,
     customer_name varchar(100) not null,
