@@ -179,7 +179,7 @@ router.get('/:id', async (req, res) => {
   return res.status(404).send('Supplier not found');
 }
 
-// 🟢 Step 3: Fetch all products for creating supply orders
+// Fetch all products for creating supply orders
 let products = [];
 try {
   const { data, error } = await supabase
@@ -337,7 +337,7 @@ router.post('/:id/orders', async (req, res) => {
     const totalAmount = items.reduce((sum, item) =>
       sum + item.quantity * item.cost_price, 0);
 
-    // 1️⃣ Insert into supply_orders
+    // Insert into supply_orders
     const { data: orderData, error: orderError } = await supabase
       .from('supply_orders')
       .insert([{ supplier_id: supplierId, total_amount: totalAmount }])
@@ -347,7 +347,7 @@ router.post('/:id/orders', async (req, res) => {
     if (orderError) throw orderError;
     const order_num = orderData.order_num;
 
-    // 2️⃣ Insert into supply_order_details
+    // Insert into supply_order_details
     const detailRows = items.map(i => ({
       order_num,
       product_code: i.product_code,
@@ -361,7 +361,7 @@ router.post('/:id/orders', async (req, res) => {
 
     if (detailsError) throw detailsError;
 
-    // ✅ The trigger automatically increases product stock
+    // The trigger automatically increases product stock
     res.status(200).send('Supply order created successfully');
   } catch (err) {
     console.error('Error creating supplier order:', err);
