@@ -279,7 +279,7 @@ footer a:hover {
   border-bottom: 1px solid #e0e0e0;
 }
 
-.styled-table tr:hover {
+.styled-table tbody tr:hover {
   background-color: #f0f8ff;
   transition: background-color 0.2s;
 }
