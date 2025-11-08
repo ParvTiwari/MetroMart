@@ -75,6 +75,10 @@ app.use("/customers", customerRoutes);
 app.use("/sales", salesRoutes);
 app.use("/returns", returnRoutes);
 
+app.get(/.*/, (req, res) => {
+    res.render("404.ejs");
+});
+
 // Server Start
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
