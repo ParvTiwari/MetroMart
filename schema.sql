@@ -152,7 +152,7 @@ begin
 end;
 $$ language plpgsql;
 create trigger trg_loyalty_points
-before insert on sales_invoices
+after insert on sales_invoices
 for each row
 execute function calculate_loyalty_points();
 
@@ -167,7 +167,6 @@ begin
     return new;
 end;
 $$ language plpgsql;
-
 create trigger trg_reduce_stock_after_sale
 after insert on sales_details
 for each row
@@ -184,7 +183,6 @@ begin
     return new;
 end;
 $$ language plpgsql;
-
 create trigger trg_increase_stock_after_supply
 after insert on supply_order_details
 for each row
@@ -201,7 +199,6 @@ begin
     return new;
 end;
 $$ language plpgsql;
-
 create trigger trg_increase_stock_after_return
 after insert on returns
 for each row
