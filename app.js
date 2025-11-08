@@ -46,7 +46,7 @@ app.use(
 );
 app.use(flash());
 
-// 🌐 Make flash messages available globally (for all views)
+// Make flash messages available globally (for all views)
 app.use((req, res, next) => {
   res.locals.message = req.flash("message");
   res.locals.error = req.flash("error");
