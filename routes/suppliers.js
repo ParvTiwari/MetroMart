@@ -183,10 +183,15 @@ router.get('/:id', async (req, res) => {
 let products = [];
 try {
   const { data, error } = await supabase
-    .from('products')
-    .select('product_code, product_name, price, stock')
-    .eq('is_active', true)
-    .order('product_name', { ascending: true });
+  .from('product_supplier')
+  .select(`
+    supplier_id,
+    cost_price,
+    products (
+      product_name
+    )
+  `)
+  .eq('supplier_id', supplierId);
   if (error) throw error;
   products = data;
 } catch (err) {
