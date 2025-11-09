@@ -186,6 +186,7 @@ try {
   .from('product_supplier')
   .select(`
     supplier_id,
+    product_code,
     cost_price,
     products (
       product_name
