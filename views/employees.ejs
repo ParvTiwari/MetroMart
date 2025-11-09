@@ -72,7 +72,7 @@
           <th>ID</th><th>Name</th><th>Email</th>
           <th>Mobile</th><th>Department</th>
           <th>Salary</th><th>Actions</th>
-          <th>Status</th>
+          <th>Status</th><th>Hire Date</th>
         </tr>
       </thead>
       <tbody>
@@ -92,6 +92,10 @@
               <span class="badge <%= emp.is_active ? 'bg-success' : 'bg-secondary' %>">
                   <%= emp.is_active ? 'Active' : 'Inactive' %>
               </span>
+            </td>
+            <td><%const d = new Date(emp.hire_date);
+                  const formattedDate = ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' +d.getFullYear(); %>
+                  <%= formattedDate %>
             </td>
           </tr>
         <% }) %>

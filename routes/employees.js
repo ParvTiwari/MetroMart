@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
   // First try using the pg pool (fast, SQL). If it fails (no SUPABASE_DB_URL), fallback to supabase client.
   try {
     let employeesQuery = `
-      SELECT e.emp_id, e.emp_name, e.email, e.mobile, e.salary, e.is_active, d.dep_name
+      SELECT e.emp_id, e.emp_name, e.email, e.mobile, e.salary, e.is_active, e.hire_date, d.dep_name
       FROM employees e
       LEFT JOIN department d ON d.supervisor_id = e.emp_id
       where 1=1
@@ -72,6 +72,7 @@ router.get('/', async (req, res) => {
           mobile: e.mobile,
           salary: e.salary,
           is_active: e.is_active,
+          hire_date: e.hire_date,
           dep_name: dep ? dep.dep_name : null
         };
       });
