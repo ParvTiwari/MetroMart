@@ -43,6 +43,12 @@
           </select>
         </div>
 
+        <div class="form-group">
+          <label for="is_active">Status:</label>
+          <input type="checkbox" id="is_active" name="is_active" value="true" <%= employee.is_active ? 'checked' : '' %> >
+          <label for="is_active">Active</label>
+        </div>
+
         <div class="button-right" style="grid-column: span 2;">
           <button type="submit" class="btn-primary">💾 Update Employee</button>
           <a href="/employees" class="btn-secondary" style="margin-left: 10px;">⬅ Back</a>

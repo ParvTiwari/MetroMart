@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
   // First try using the pg pool (fast, SQL). If it fails (no SUPABASE_DB_URL), fallback to supabase client.
   try {
     let employeesQuery = `
-      SELECT e.emp_id, e.emp_name, e.email, e.mobile, e.salary, d.dep_name
+      SELECT e.emp_id, e.emp_name, e.email, e.mobile, e.salary, e.is_active, d.dep_name
       FROM employees e
       LEFT JOIN department d ON d.supervisor_id = e.emp_id
       where 1=1
@@ -71,6 +71,7 @@ router.get('/', async (req, res) => {
           email: e.email,
           mobile: e.mobile,
           salary: e.salary,
+          is_active: e.is_active,
           dep_name: dep ? dep.dep_name : null
         };
       });
@@ -175,20 +176,22 @@ router.get('/edit/:emp_id', async (req, res) => {
 // ✅ POST Update Employee
 router.post('/edit/:emp_id', async (req, res) => {
   const empId = req.params.emp_id;
-  const { emp_name, email, mobile, salary, dep_id } = req.body;
+  const { emp_name, email, mobile, salary, dep_id, is_active} = req.body;
+
+  const activeStatus = is_active === 'on';
 
   try {
     const updateQuery = `
       UPDATE employees
-      SET emp_name = $1, email = $2, mobile = $3, salary = $4
-      WHERE emp_id = $5
+      SET emp_name = $1, email = $2, mobile = $3, salary = $4, is_active = $5
+      WHERE emp_id = $6
     `;
-    await pool.query(updateQuery, [emp_name, email, mobile, salary, empId]);
+    await pool.query(updateQuery, [emp_name, email, mobile, salary, activeStatus, empId]);
     res.redirect('/employees');
   } catch (err) {
     console.warn('PG update failed, falling back to Supabase:', err.message || err);
     try {
-      const { data, error } = await supabase.from('employees').update({ emp_name, email, mobile, salary }).eq('emp_id', empId);
+      const { data, error } = await supabase.from('employees').update({ emp_name, email, mobile, salary, is_active: activeStatus }).eq('emp_id', empId);
       if (error) throw error;
       res.redirect('/employees');
     } catch (supErr) {
