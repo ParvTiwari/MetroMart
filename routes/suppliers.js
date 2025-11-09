@@ -176,10 +176,31 @@ router.get('/:id', async (req, res) => {
     }
 
     if (!supplier) {
-      return res.status(404).send('Supplier not found');
-    }
+  return res.status(404).send('Supplier not found');
+}
 
-    res.render('suppliers/show', { supplier, supplyOrders });
+// Fetch all products for creating supply orders
+let products = [];
+try {
+  const { data, error } = await supabase
+  .from('product_supplier')
+  .select(`
+    supplier_id,
+    cost_price,
+    products (
+      product_name
+    )
+  `)
+  .eq('supplier_id', supplierId);
+  if (error) throw error;
+  products = data;
+} catch (err) {
+  console.error('Error loading products for supply order form:', err);
+}
+
+// Finally render the supplier page with product list included
+res.render('suppliers/show', { supplier, supplyOrders, products });
+
   } catch (err) {
     console.error('Error loading supplier:', err);
     res.status(500).send('Error loading supplier');
@@ -305,6 +326,51 @@ router.post('/:id/delete', async (req, res) => {
   } catch (err) {
     console.error('Error deleting supplier:', err);
     res.status(500).send('Error deleting supplier');
+  }
+});
+// --- Create Supply Order directly inside Supplier page ---
+router.post('/:id/orders', async (req, res) => {
+  const supplierId = Number(req.params.id);
+  const { items } = req.body;
+
+  if (!supplierId || !items || !Array.isArray(items)) {
+    return res.status(400).send('Invalid input data');
+  }
+
+  try {
+    // Calculate total amount
+    const totalAmount = items.reduce((sum, item) =>
+      sum + item.quantity * item.cost_price, 0);
+
+    // Insert into supply_orders
+    const { data: orderData, error: orderError } = await supabase
+      .from('supply_orders')
+      .insert([{ supplier_id: supplierId, total_amount: totalAmount }])
+      .select('order_num')
+      .single();
+
+    if (orderError) throw orderError;
+    const order_num = orderData.order_num;
+
+    // Insert into supply_order_details
+    const detailRows = items.map(i => ({
+      order_num,
+      product_code: i.product_code,
+      quantity: i.quantity,
+      cost_price: i.cost_price
+    }));
+
+    const { error: detailsError } = await supabase
+      .from('supply_order_details')
+      .insert(detailRows);
+
+    if (detailsError) throw detailsError;
+
+    // The trigger automatically increases product stock
+    res.status(200).send('Supply order created successfully');
+  } catch (err) {
+    console.error('Error creating supplier order:', err);
+    res.status(500).send('Error creating supplier order');
   }
 });
 

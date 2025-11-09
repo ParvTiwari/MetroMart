@@ -19,6 +19,7 @@ import departmentRoutes from "./routes/departments.js";
 import salesRoutes from "./routes/sales.js";
 import returnRoutes from "./routes/returns.js";
 import dashboardRoutes from "./routes/dashboard.js";
+import supplyOrdersRouter from './routes/supply_orders.js';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 //  Middleware
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());  
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
@@ -44,7 +46,7 @@ app.use(
 );
 app.use(flash());
 
-// 🌐 Make flash messages available globally (for all views)
+// Make flash messages available globally (for all views)
 app.use((req, res, next) => {
   res.locals.message = req.flash("message");
   res.locals.error = req.flash("error");
@@ -74,6 +76,7 @@ app.use("/suppliers", supplierRoutes);
 app.use("/customers", customerRoutes);
 app.use("/sales", salesRoutes);
 app.use("/returns", returnRoutes);
+app.use("/supply_orders", supplyOrdersRouter);
 
 app.get(/.*/, (req, res) => {
     res.render("404.ejs");
