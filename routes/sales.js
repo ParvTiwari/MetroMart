@@ -416,7 +416,7 @@ const loadInvoiceFromSupabase = async (invoiceId) => {
       discount_applied: Number(data.discount_applied) || 0,
       tax_amount: Number(data.tax_amount) || 0,
       final_amount: Number(data.final_amount) || 0,
-      loyalty_points_earned: Number(data.loyalty_points_earned) || 0,
+      loyalty_points_earned: Number(Math.round(data.final_amount * 0.05)) || 0,
       customer_name: data.customers?.customer_name || 'Walk-in Customer',
       customer_email: data.customers?.email || null,
       customer_mobile: data.customers?.mobile || null,
