@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
   const { search, sort } = req.query;
   try {
     // Build Supabase query
-    let depQuery = supabase.from('department').select('dep_id,dep_name,supervisor_id');
+    let depQuery = supabase.from('department').select('dep_id,dep_name,start_date,supervisor_id');
     if (search && search.trim() !== '') depQuery = depQuery.ilike('dep_name', `%${search}%`);
     // ordering
     if (sort === 'name_asc') depQuery = depQuery.order('dep_name', { ascending: true });
@@ -42,7 +42,7 @@ router.get("/", async (req, res) => {
     // fallback to PG like before
     try {
       let query = `
-      SELECT d.dep_id, d.dep_name, e.emp_name AS supervisor_name
+      SELECT d.dep_id, d.dep_name, e.emp_name AS supervisor_name, d.start_date
       FROM department d
       LEFT JOIN employees e ON d.supervisor_id = e.emp_id
       WHERE 1=1

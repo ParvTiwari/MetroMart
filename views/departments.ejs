@@ -65,6 +65,7 @@
             <th>ID</th>
             <th>Department Name</th>
             <th>Supervisor</th>
+            <th>Start Date</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -74,6 +75,10 @@
               <td><%= dep.dep_id %></td>
               <td><%= dep.dep_name %></td>
               <td><%= dep.supervisor_name || '—' %></td>
+              <td><%const d = new Date(dep.start_date);
+                  const formattedDate = ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' +d.getFullYear(); %>
+                  <%= formattedDate %>
+              </td>              
               <td>
                 <a href="/departments/edit/<%= dep.dep_id %>" class="btn-edit">✏ Edit</a>
                 <a href="/departments/delete/<%= dep.dep_id %>" class="btn-delete" onclick="return confirm('Are you sure?')">🗑 Delete</a>
