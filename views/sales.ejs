@@ -118,7 +118,8 @@
               <th>Items</th>
               <th>Subtotal</th>
               <th>Discount</th>
-              <th>Tax</th>
+              <th>Tax</th>  
+              <th>Loyalty Points</th>
               <th>Total</th>
               <th></th>
             </tr>
@@ -139,6 +140,7 @@
                   <td>&#8377;<%= inv.sub_total.toFixed(2) %></td>
                   <td>&#8377;<%= inv.discount_applied.toFixed(2) %></td>
                   <td>&#8377;<%= inv.tax_amount.toFixed(2) %></td>
+                  <td><%= inv.loyalty_points_earned %></td>
                   <td><strong>&#8377;<%= inv.final_amount.toFixed(2) %></strong></td>
                   <td><a class="btn-secondary" href="/sales/<%= inv.invoice_num %>">View</a></td>
                 </tr>

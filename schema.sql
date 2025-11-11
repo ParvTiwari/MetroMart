@@ -234,3 +234,17 @@ create trigger trg_reduce_loyalty_points_on_return
 after insert on returns
 for each row
 execute function reduce_loyalty_points_on_return();
+
+create or replace function update_loyalty_points_earned()
+returns trigger as $$
+begin
+    update sales_invoices
+    set loyalty_points_earned = round(new.final_amount * 0.05)
+    where invoice_num = new.invoice_num;
+    return new;
+end;
+$$ language plpgsql;
+create trigger trg_update_loyalty_points_earned
+after insert on sales_invoices
+for each row
+execute function update_loyalty_points_earned();

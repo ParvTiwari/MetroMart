@@ -44,6 +44,7 @@ const mapPgInvoiceRow = (row) => {
   const subTotal = Number(row.sub_total) || 0;
   const discount = Number(row.discount_applied) || 0;
   const tax = Number(row.tax_amount) || 0;
+  const loyalty_points = Number(row.loyalty_points_earned) || 0;
   const finalAmount = Number(row.final_amount) || Number((subTotal - discount + tax).toFixed(2));
   const totalItems = Number(row.total_items) || 0;
 
@@ -92,6 +93,7 @@ const loadSalesFromPg = async (filters) => {
              si.sub_total,
              si.discount_applied,
              si.tax_amount,
+             loyalty_points_earned: loyalty_points,
              si.final_amount,
              COALESCE(c.customer_name, 'Walk-in Customer') AS customer_name,
              e.emp_name,
