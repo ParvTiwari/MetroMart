@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Departments | MetroMart</title>
-  <link rel="stylesheet" href="/styles/style.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <%- include('../partials/header') %>
@@ -15,7 +16,8 @@
     </div>
 
     <% if (departments.length > 0) { %>
-      <table class="table">
+      <div class="table-wrapper">
+      <table class="styled-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -38,6 +40,7 @@
           <% }) %>
         </tbody>
       </table>
+      </div>
     <% } else { %>
       <p>No departments found.</p>
     <% } %>

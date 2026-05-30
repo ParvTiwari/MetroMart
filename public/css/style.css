@@ -466,3 +466,106 @@ footer a:hover {
   background: #b5b5b5;
   transform: translateY(-1px);
 }
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.table-section,
+.table-wrapper,
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-toggle { display: none; }
+.nav-toggle-label {
+  display: none;
+  cursor: pointer;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: #fff;
+  user-select: none;
+}
+
+@media (max-width: 860px) {
+  .main-header {
+    flex-wrap: wrap;
+    padding: 1rem 1.25rem;
+  }
+  .nav-toggle-label { display: block; }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 0.75rem;
+  }
+  .nav-toggle:checked ~ .nav-links { display: flex; }
+
+  .nav-links a {
+    margin: 0;
+    padding: 0.8rem 0.5rem;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .nav-links a:hover { transform: none; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 1.25rem 1rem; }
+
+  .hero { padding: 2rem 1.25rem; }
+  .hero-content h1 { font-size: 1.9rem; }
+  .hero-content p { font-size: 1rem; }
+  .hero-image img { width: 100%; }
+
+  .page-title { font-size: 1.5rem; }
+  .section-title { font-size: 1.3rem; }
+
+  .form-section,
+  .table-section { padding: 1.25rem; }
+
+  /* Stop wide tables from squishing — let them scroll instead */
+  .styled-table th,
+  .styled-table td { white-space: nowrap; }
+
+  /* Filter / search / report bars stack and fill the width */
+  .filter-sort-bar { padding: 0.85rem; }
+  .filter-sort-bar form {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filter-sort-bar input,
+  .filter-sort-bar select,
+  .filter-sort-bar button,
+  .filter-sort-bar .btn-secondary,
+  .filter-sort-bar .btn-filter,
+  .filter-sort-bar .btn-primary {
+    width: 100%;
+  }
+
+  /* Action buttons inside the right-aligned bar go full width */
+  .button-right { justify-content: stretch; }
+  .button-right .btn-primary,
+  .button-right .btn-secondary { width: 100%; text-align: center; }
+
+  .product-add-row select,
+  .product-add-row .qty-input { min-width: 0; width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 { font-size: 1.6rem; }
+  .page-title { font-size: 1.3rem; }
+  .main-header .logo h2 { font-size: 1.35rem; }
+  .form-section,
+  .table-section { padding: 1rem; }
+  .cards { grid-template-columns: 1fr; }
+}
