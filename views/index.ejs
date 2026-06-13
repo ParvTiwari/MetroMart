@@ -3,9 +3,59 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MetroMart 🏪 | Smart Retail Management</title>
+
+  <!-- Primary Meta Tags -->
+  <title>MetroMart 🏪 | Smart Retail & Supermarket Management</title>
+  <meta name="title" content="MetroMart | Smart Retail & Supermarket Management" />
+  <meta name="description" content="MetroMart is an enterprise-grade supermarket management solution to manage employees, products, suppliers, customers, sales, and returns — fast, reliable, and scalable for large-scale retail chains." />
+  <meta name="keywords" content="supermarket management, retail management software, inventory management, point of sale, MetroMart, store management, sales tracking, supplier management" />
+  <meta name="author" content="Parv Tiwari" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#2563eb" />
+  <% const canonicalUrl = (typeof siteUrl !== 'undefined' && siteUrl) ? siteUrl + '/' : 'https://metromart.example.com/'; %>
+  <link rel="canonical" href="<%= canonicalUrl %>" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="<%= canonicalUrl %>" />
+  <meta property="og:title" content="MetroMart | Smart Retail & Supermarket Management" />
+  <meta property="og:description" content="Enterprise-grade supermarket management to streamline employees, products, suppliers, customers, sales, and returns." />
+  <meta property="og:image" content="<%= canonicalUrl %>images/store-illustration.png" />
+  <meta property="og:site_name" content="MetroMart" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="<%= canonicalUrl %>" />
+  <meta name="twitter:title" content="MetroMart | Smart Retail & Supermarket Management" />
+  <meta name="twitter:description" content="Enterprise-grade supermarket management to streamline employees, products, suppliers, customers, sales, and returns." />
+  <meta name="twitter:image" content="<%= canonicalUrl %>images/store-illustration.png" />
+
+  <!-- Icons & Manifest -->
+  <link rel="icon" type="image/png" href="/images/store-illustration.png" />
+  <link rel="apple-touch-icon" href="/images/store-illustration.png" />
+  <link rel="manifest" href="/manifest.json" />
+
   <link rel="stylesheet" href="/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "MetroMart",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "description": "Enterprise-grade supermarket management solution to manage employees, products, suppliers, customers, sales, and returns.",
+    "url": "<%= canonicalUrl %>",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "INR"
+    }
+  }
+  </script>
 </head>
 
 <body>

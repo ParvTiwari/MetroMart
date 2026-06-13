@@ -25,6 +25,10 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Trust the platform proxy (Vercel, Render, Nginx, …) so req.protocol reflects
+// the original https scheme from X-Forwarded-Proto — keeps canonical/OG URLs correct.
+app.set("trust proxy", true);
+
 //  View Engine & Static Setup
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -53,8 +57,53 @@ app.use((req, res, next) => {
   next();
 });
 
+// Resolve the public-facing base URL (env override, else inferred from request)
+const getSiteUrl = (req) =>
+  (process.env.SITE_URL || `${req.protocol}://${req.get("host")}`).replace(/\/$/, "");
+
 // Root route
-app.get("/", (req, res) => res.render("index"));
+app.get("/", (req, res) => res.render("index", { siteUrl: getSiteUrl(req) }));
+
+// robots.txt — allow the public landing page, keep management routes out of the index
+app.get("/robots.txt", (req, res) => {
+  const siteUrl = getSiteUrl(req);
+  res.type("text/plain").send(
+    [
+      "User-agent: *",
+      "Allow: /",
+      "Disallow: /dashboard",
+      "Disallow: /employees",
+      "Disallow: /departments",
+      "Disallow: /products",
+      "Disallow: /suppliers",
+      "Disallow: /customers",
+      "Disallow: /sales",
+      "Disallow: /returns",
+      "Disallow: /supply_orders",
+      "",
+      `Sitemap: ${siteUrl}/sitemap.xml`,
+      "",
+    ].join("\n")
+  );
+});
+
+// sitemap.xml — only the public landing page is indexable
+app.get("/sitemap.xml", (req, res) => {
+  const siteUrl = getSiteUrl(req);
+  const lastmod = new Date().toISOString().split("T")[0];
+  res.type("application/xml").send(
+    `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${siteUrl}/</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
+`
+  );
+});
 
 (async () => {
   try {

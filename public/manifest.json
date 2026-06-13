@@ -1,0 +1,27 @@
+{
+  "name": "MetroMart - Smart Retail Management",
+  "short_name": "MetroMart",
+  "description": "Enterprise-grade supermarket management solution for employees, products, suppliers, customers, sales, and returns.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "lang": "en",
+  "categories": ["business", "productivity", "shopping", "management"],
+  "icons": [
+    {
+      "src": "/images/store-illustration.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/store-illustration.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
