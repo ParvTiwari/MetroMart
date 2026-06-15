@@ -14,6 +14,54 @@ MetroMart aims to provide features such as:
 - Comprehensive product catalog with categories and detailed information
 - Efficient inventory management system
 
+## Tech Stack
+
+- **Runtime:** Node.js (ES modules)
+- **Server:** Express 5
+- **Views:** EJS templates
+- **Database:** Supabase (Postgres) via `@supabase/supabase-js` and `pg`
+- **Dev tooling:** nodemon
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- A Supabase project (or a local Postgres database)
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure environment variables
+
+Create a `.env` file in the project root:
+
+```bash
+# Supabase
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_DB_URL=postgresql://user:password@host:5432/postgres
+
+# Optional
+PORT=3000                                  # defaults to 3000
+SITE_URL=https://your-domain.com           # canonical URL for SEO
+```
+
+### 3. Set up the database
+
+See [Database Setup](#database-setup) below to create the tables.
+
+### 4. Run the application
+
+```bash
+npm start
+```
+
+The server starts at `http://localhost:3000` (or your configured `PORT`).
+
 ## Database Setup
 
 ### Initializing the Database
@@ -53,3 +101,7 @@ A simple seed script for suppliers is available at `scripts/sample_suppliers_see
 3. Run the verification query at the bottom to confirm insertion.
 
 This provides a foundation for testing supplier-related features and supply order management.
+
+## License
+
+Licensed under the [MIT License](LICENSE).
